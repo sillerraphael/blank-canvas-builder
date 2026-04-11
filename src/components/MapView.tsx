@@ -418,7 +418,10 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         { eventId, isCurrentlySubscribed: isSub },
         {
           onSuccess: () => toast.success(isSub ? "Abonnement beendet" : "Erfolgreich abonniert! 🔔"),
-          onError: () => toast.error("Fehler beim Ändern des Abonnements"),
+          onError: (err: unknown) => {
+            const msg = err instanceof Error ? err.message : "Unbekannter Fehler";
+            toast.error(`Fehler: ${msg}`);
+          },
         }
       );
     };

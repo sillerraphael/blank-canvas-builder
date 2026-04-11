@@ -46,13 +46,28 @@ async function removeSubscription(userId: string, eventId: number) {
   }
 }
 
-export function useSubscriptions() {
+/**
+ * Returns the canonical Supabase-authenticated user ID.
+ * This ensures subscription operations always match the bearer token,
+ * satisfying RLS policies.
+ */
+function useSupabaseUserId(): string | undefined {
   const { bayernUser } = useAuthStore();
-  const userId = bayernUser?.id;
+  return bayernUser?.id;
+}
+
+export function useSubscriptions() {
+  const userId = useSupabaseUserId();
 
   return useQuery({
     queryKey: ["subscriptions", userId],
-    queryFn: () => fetchSubscriptions(userId!),
+    queryFn: async () => {
+      // Double-check the session to guarantee we use the token's user id
+      const { data: { session } } = await supabase.auth.getSession();
+      const id = session?.user?.id ?? userId;
+      if (!id) throw new Error("Not authenticated");
+      return fetchSubscriptions(id);
+    },
     enabled: !!userId,
     staleTime: 30_000,
   });
@@ -65,8 +80,6 @@ export function useSubscribedEventIds(): Set<number> {
 
 export function useToggleSubscription() {
   const qc = useQueryClient();
-  const { bayernUser } = useAuthStore();
-  const userId = bayernUser?.id;
 
   return useMutation({
     mutationFn: async ({
@@ -76,7 +89,11 @@ export function useToggleSubscription() {
       eventId: number;
       isCurrentlySubscribed: boolean;
     }) => {
+      // Always read the real session user id at mutation time
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
       if (!userId) throw new Error("Nicht eingeloggt");
+
       if (isCurrentlySubscribed) {
         await removeSubscription(userId, eventId);
       } else {
