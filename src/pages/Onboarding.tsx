@@ -116,7 +116,7 @@ export default function Onboarding() {
         </div>
 
         {/* Footer */}
-        <div className="mt-auto text-center space-y-3">
+        <div className="mt-auto text-center space-y-2">
           <Button
             onClick={handleGoToMap}
             disabled={!canProceed}
@@ -125,20 +125,23 @@ export default function Onboarding() {
           >
             Weiter
           </Button>
-          <p className="text-xs text-muted-foreground">
-            {canProceed
-              ? "Du kannst diese später in den Einstellungen ändern."
-              : `${selectedCount}/3 ausgewählt`}
-          </p>
-          <button
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full rounded-xl text-sm text-muted-foreground"
             onClick={() => {
               completeOnboarding();
               navigate("/");
             }}
-            className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors"
           >
             Überspringen
-          </button>
+          </Button>
+          <p className="text-xs text-muted-foreground pt-1">
+            {canProceed
+              ? "Du kannst diese später in den Einstellungen ändern."
+              : `${selectedCount}/3 ausgewählt`}
+          </p>
+        </div>
         </div>
       </div>
     </div>
