@@ -290,7 +290,9 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   const { data: subscriptions } = useSubscriptions();
   const toggleSubscription = useToggleSubscription();
 
-  const subscribedIds = new Set(subscriptions ?? []);
+  const subscribedIds = new Set(
+    (subscriptions ?? []).map((s) => s.event_id)
+  );
 
   // ── Create initiative state ──
   const setIsPlacingInitiative = onSetPlacingInitiative;
