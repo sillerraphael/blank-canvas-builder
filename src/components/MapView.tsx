@@ -708,6 +708,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         .setLatLng(e.layer.getLatLng())
         .setContent(popupHtml)
         .openOn(map);
+      });
     });
 
     // ── Render street polylines & resolve OSRM routes ──
