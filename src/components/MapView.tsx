@@ -140,12 +140,17 @@ function buildPopup(m: MapMarkerData, subscribedIds?: Set<number>) {
     const parts: string[] = [];
     if (m.startDate) parts.push(`<span style="font-weight:600">Start:</span> ${m.startDate}`);
     if (m.endDate) parts.push(`<span style="font-weight:600">Ende:</span> ${m.endDate}`);
-    if (m.impact) parts.push(`<span style="font-weight:600">Auswirkung:</span> ${m.impact}`);
     if (parts.length > 0) {
       extraHtml += `<div style="margin-top:8px;padding:6px 8px;background:#fff7ed;border-radius:6px;font-size:11px;color:#9a3412;line-height:1.6">
         ${parts.join("<br/>")}
       </div>`;
     }
+  }
+
+  if (m.impact) {
+    extraHtml += `<div style="margin-top:6px;padding:4px 8px;background:#fff7ed;border-radius:6px;font-size:11px;color:#9a3412">
+      <span style="font-weight:600">Auswirkung:</span> ${m.impact}
+    </div>`;
   }
 
   if (m.category === "spielplatz") {
