@@ -11,13 +11,13 @@ interface Topic {
 }
 
 const topics: Topic[] = [
-  { id: "housing", title: "Housing & Living", subtitle: "Construction, permits & affordability" },
-  { id: "mobility", title: "Mobility & Transport", subtitle: "Transit, cycling & roads" },
-  { id: "environment", title: "Environment & Climate", subtitle: "Green spaces & climate action" },
-  { id: "social", title: "Social Policy", subtitle: "Integration, youth & education" },
-  { id: "economy", title: "Economy & Labor", subtitle: "Local business & job market" },
-  { id: "digital", title: "Digitalization", subtitle: "Smart city & broadband" },
-  { id: "urban", title: "Urban Development", subtitle: "City planning & participation" },
+  { id: "housing", title: "Wohnen & Bauen", subtitle: "Bauprojekte, Genehmigungen & Bezahlbarkeit" },
+  { id: "mobility", title: "Mobilität & Verkehr", subtitle: "ÖPNV, Radwege & Straßenplanung" },
+  { id: "environment", title: "Umwelt & Klima", subtitle: "Grünflächen & Klimaschutz" },
+  { id: "social", title: "Soziales", subtitle: "Integration, Jugend & Bildung" },
+  { id: "economy", title: "Wirtschaft & Arbeit", subtitle: "Lokale Wirtschaft & Arbeitsmarkt" },
+  { id: "digital", title: "Digitalisierung", subtitle: "Smart City & Breitband" },
+  { id: "urban", title: "Stadtentwicklung", subtitle: "Planung & Bürgerbeteiligung" },
 ];
 
 function TopicTile({
@@ -32,10 +32,10 @@ function TopicTile({
   return (
     <button
       onClick={onToggle}
-      className={`w-full text-left rounded-xl px-5 py-4 transition-all duration-200 border cursor-pointer ${
+      className={`w-full text-left rounded-xl px-5 py-4 transition-all duration-200 border cursor-pointer backdrop-blur-sm ${
         isSelected
-          ? "border-primary bg-primary/5 ring-1 ring-primary/20"
-          : "border-border bg-card hover:border-muted-foreground/30"
+          ? "border-primary bg-primary/10 ring-1 ring-primary/20"
+          : "border-border/60 bg-card/80 hover:border-muted-foreground/30"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
@@ -72,21 +72,31 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex-1 w-full max-w-md mx-auto px-6 py-16 flex flex-col">
+    <div className="min-h-screen relative flex flex-col">
+      {/* Map background */}
+      <div className="absolute inset-0 z-0">
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=11.45,48.08,11.7,48.2&layer=mapnik"
+          className="w-full h-full border-0 pointer-events-none opacity-30"
+          title="map background"
+        />
+        <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
+      </div>
+
+      <div className="relative z-10 flex-1 w-full max-w-md mx-auto px-6 py-16 flex flex-col">
         {/* Header */}
         <div className="text-center mb-10 space-y-3">
           <h1 className="text-2xl font-bold text-foreground">
-            What moves you in your city?
+            Was bewegt dich in deiner Stadt?
           </h1>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Pick at least 3 priorities — we'll tailor your map experience.
+            Wähle mindestens 3 Prioritäten — wir passen deine Kartenansicht an.
           </p>
           {/* Progress */}
           <div className="mx-auto max-w-[200px] h-1 rounded-full bg-muted overflow-hidden mt-4">
             <div className="h-full bg-primary/60 rounded-full transition-all" style={{ width: "50%" }} />
           </div>
-          <p className="text-xs text-muted-foreground/60">Step 1 of 2</p>
+          <p className="text-xs text-muted-foreground/60">Schritt 1 von 2</p>
         </div>
 
         {/* Topic tiles */}
@@ -113,21 +123,21 @@ export default function Onboarding() {
             size="lg"
             className="w-full rounded-xl text-sm"
           >
-            Continue
+            Weiter
           </Button>
           <p className="text-xs text-muted-foreground">
             {canProceed
-              ? "You can change these later in settings."
-              : `${selectedCount}/3 selected`}
+              ? "Du kannst diese später in den Einstellungen ändern."
+              : `${selectedCount}/3 ausgewählt`}
           </p>
           <button
             onClick={() => {
               completeOnboarding();
               navigate("/");
             }}
-            className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors"
           >
-            Skip for now
+            Überspringen
           </button>
         </div>
       </div>
