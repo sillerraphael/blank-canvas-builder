@@ -1,36 +1,39 @@
 import { useState, useCallback } from "react";
 import { Plus, ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
-
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useInitiatives } from "@/hooks/useInitiatives";
+import { useInitiatives, useVoteInitiative } from "@/hooks/useInitiatives";
 import { useCategories } from "@/hooks/useCategories";
 import { useNavigate } from "react-router-dom";
-import { getLocalVotes, toggleVote, type VoteType } from "@/lib/initiativesApi";
+import { getLocalVotes, type VoteType } from "@/lib/initiativesApi";
 
 export default function CommunityInitiatives() {
   const { categories: categoryOptions, categoryColors } = useCategories();
   const { data: initiatives, isLoading, error } = useInitiatives();
+  const voteMutation = useVoteInitiative();
   const navigate = useNavigate();
 
   const [votes, setVotes] = useState<Record<string, VoteType>>(getLocalVotes);
-  const [deltas, setDeltas] = useState<Record<string, { upvotes: number; downvotes: number }>>({});
 
-  const handleVote = useCallback((id: string | number, direction: "up" | "down") => {
-    const result = toggleVote(id, direction);
-    setVotes(getLocalVotes());
-    setDeltas((prev) => {
-      const old = prev[String(id)] ?? { upvotes: 0, downvotes: 0 };
-      return {
-        ...prev,
-        [String(id)]: {
-          upvotes: old.upvotes + result.delta.upvotes,
-          downvotes: old.downvotes + result.delta.downvotes,
-        },
-      };
-    });
-  }, []);
+  const pendingVoteId =
+    voteMutation.isPending && voteMutation.variables
+      ? String(voteMutation.variables.initiativeId)
+      : null;
+
+  const handleVote = useCallback(
+    async (id: string | number, direction: "up" | "down") => {
+      try {
+        await voteMutation.mutateAsync({ initiativeId: id, direction });
+        setVotes(getLocalVotes());
+      } catch (error) {
+        console.error("Failed to save initiative vote:", error);
+        toast.error("Deine Stimme konnte nicht gespeichert werden.");
+      }
+    },
+    [voteMutation],
+  );
 
   return (
     <>
@@ -87,10 +90,10 @@ export default function CommunityInitiatives() {
             {(initiatives ?? []).map((init, i) => {
               const id = String(init.id);
               const userVote = votes[id] ?? null;
-              const d = deltas[id] ?? { upvotes: 0, downvotes: 0 };
-              const displayUpvotes = Math.max(0, init.upvotes + d.upvotes);
-              const displayDownvotes = Math.max(0, init.downvotes + d.downvotes);
+              const displayUpvotes = Math.max(0, init.upvotes);
+              const displayDownvotes = Math.max(0, init.downvotes);
               const netScore = displayUpvotes - displayDownvotes;
+              const isSavingVote = pendingVoteId === id;
 
               return (
                 <motion.div
@@ -104,7 +107,8 @@ export default function CommunityInitiatives() {
                     <div className="flex flex-col items-center gap-1 pt-0.5">
                       <button
                         onClick={() => handleVote(init.id, "up")}
-                        className={`p-1.5 rounded-lg transition-colors ${
+                        disabled={isSavingVote}
+                        className={`p-1.5 rounded-lg transition-colors disabled:opacity-60 ${
                           userVote === "up"
                             ? "bg-primary/20 text-primary"
                             : "hover:bg-primary/10 text-muted-foreground hover:text-primary"
@@ -125,7 +129,8 @@ export default function CommunityInitiatives() {
                       </span>
                       <button
                         onClick={() => handleVote(init.id, "down")}
-                        className={`p-1.5 rounded-lg transition-colors ${
+                        disabled={isSavingVote}
+                        className={`p-1.5 rounded-lg transition-colors disabled:opacity-60 ${
                           userVote === "down"
                             ? "bg-destructive/20 text-destructive"
                             : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
