@@ -298,7 +298,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   // (cluster popups use native Leaflet popups — no React state needed)
 
   // ── Subscriptions ──
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, bayernUser } = useAuthStore();
   const { data: subscriptions } = useSubscriptions();
   const toggleSubscription = useToggleSubscription();
 
@@ -310,6 +310,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   const setIsPlacingInitiative = onSetPlacingInitiative;
   const [pendingLocation, setPendingLocation] = useState<{ lat: number; lng: number } | null>(null);
   const previewMarkerRef = useRef<L.Marker | null>(null);
+  const homeMarkerRef = useRef<L.Marker | null>(null);
 
   // ── Live data from Supabase ──
   const { data: categoryData, isLoading: catLoading } = useMapCategories();
@@ -443,35 +444,14 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
       maxZoom: 19,
     }).addTo(map);
 
-    // Use stored BayernID user location
+    // Initial home marker from stored user
     const storedUser = getStoredUser();
     if (storedUser?.location) {
       const { lat, lng } = storedUser.location;
       map.setView([lat, lng], 15);
-
-      const wohnortIcon = L.divIcon({
-        className: "",
-        iconSize: [14, 14],
-        iconAnchor: [7, 7],
-        popupAnchor: [0, -10],
-        html: `<div style="
-          width:14px;height:14px;
-          background:#dc2626;
-          border:2px solid white;
-          border-radius:50%;
-          box-shadow:0 0 0 3px rgba(220,38,38,0.2), 0 1px 4px rgba(0,0,0,0.15);
-        "></div>`,
-      });
-
-      L.marker([lat, lng], { icon: wohnortIcon, zIndexOffset: 1000 })
-        .addTo(map)
-        .bindPopup(
-          '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600">🏠 Mein Standort</div>',
-          { closeButton: false },
-        );
     }
 
-    
+
     mapRef.current = map;
     return () => {
       map.remove();
@@ -479,7 +459,47 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
     };
   }, []);
 
-  // ── Render layers ──
+  // ── Reactive home location marker ──
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Remove old home marker
+    if (homeMarkerRef.current) {
+      homeMarkerRef.current.remove();
+      homeMarkerRef.current = null;
+    }
+
+    const loc = bayernUser?.location;
+    if (!loc) return;
+
+    const wohnortIcon = L.divIcon({
+      className: "",
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10],
+      html: `<div style="
+        width:14px;height:14px;
+        background:#dc2626;
+        border:2px solid white;
+        border-radius:50%;
+        box-shadow:0 0 0 3px rgba(220,38,38,0.2), 0 1px 4px rgba(0,0,0,0.15);
+      "></div>`,
+    });
+
+    const marker = L.marker([loc.lat, loc.lng], { icon: wohnortIcon, zIndexOffset: 1000 })
+      .addTo(map)
+      .bindPopup(
+        '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600">🏠 Mein Standort</div>',
+        { closeButton: false },
+      );
+    homeMarkerRef.current = marker;
+
+    // Fly to new location
+    map.flyTo([loc.lat, loc.lng], 15, { duration: 1.5 });
+  }, [bayernUser?.location?.lat, bayernUser?.location?.lng]);
+
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;

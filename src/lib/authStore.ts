@@ -25,6 +25,7 @@ export interface AuthState {
   ) => void;
   setPriority: (topicId: string, level: PriorityLevel) => void;
   completeOnboarding: () => void;
+  updateLocation: (lat: number, lng: number) => void;
 }
 
 const STORAGE_KEY = "bayern_id_user";
@@ -159,5 +160,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem(`onboarding_completed_${bayernUser.id}`, "true");
     }
     set({ hasCompletedOnboarding: true });
+  },
+
+  updateLocation: (lat, lng) => {
+    const bayernUser = useAuthStore.getState().bayernUser;
+    if (bayernUser) {
+      const updated = { ...bayernUser, location: { lat, lng } };
+      persistUser(updated);
+      set({ bayernUser: updated });
+    }
   },
 }));

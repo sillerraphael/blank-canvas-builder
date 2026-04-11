@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X, MapPin } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +34,7 @@ interface TopNavbarProps {
 export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, hasCompletedOnboarding, user, logout, setAuthenticatedUser } = useAuthStore();
+  const { isLoggedIn, hasCompletedOnboarding, user, bayernUser, logout, setAuthenticatedUser, updateLocation } = useAuthStore();
 
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -47,6 +47,8 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [locationInput, setLocationInput] = useState("");
+  const [isGeocodingLocation, setIsGeocodingLocation] = useState(false);
 
   const showLoggedInUI = isLoggedIn && hasCompletedOnboarding;
 
@@ -121,6 +123,31 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
     await supabase.auth.signOut();
     logout();
     navigate("/");
+  };
+
+  const handleGeocodeLocation = async () => {
+    const query = locationInput.trim();
+    if (!query) return;
+    setIsGeocodingLocation(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
+      );
+      const data = await res.json();
+      if (data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lng = parseFloat(data[0].lon);
+        updateLocation(lat, lng);
+        setLocationInput("");
+        toast.success(`Standort aktualisiert: ${data[0].display_name.split(",").slice(0, 2).join(",")}`);
+      } else {
+        toast.error("Adresse nicht gefunden");
+      }
+    } catch {
+      toast.error("Geocoding fehlgeschlagen");
+    } finally {
+      setIsGeocodingLocation(false);
+    }
   };
 
   return (
@@ -230,9 +257,35 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
               <p className="text-lg font-semibold text-foreground">{user?.name ?? "Benutzer"}</p>
               <p className="text-sm text-muted-foreground">{user?.email ?? "–"}</p>
             </div>
-            <Button variant="outline" className="rounded-xl mt-2" onClick={() => toast.info("Profil bearbeiten kommt bald!")}>
-              Profil bearbeiten
-            </Button>
+
+            <div className="w-full space-y-2 mt-2">
+              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-primary" />
+                Mein Standort
+              </label>
+              <p className="text-xs text-muted-foreground">
+                {bayernUser?.location
+                  ? `${bayernUser.location.lat.toFixed(4)}, ${bayernUser.location.lng.toFixed(4)}`
+                  : "Nicht festgelegt"}
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="z.B. Marienplatz, München"
+                  className="rounded-xl text-sm"
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleGeocodeLocation()}
+                />
+                <Button
+                  size="sm"
+                  className="rounded-xl shrink-0"
+                  onClick={handleGeocodeLocation}
+                  disabled={isGeocodingLocation || !locationInput.trim()}
+                >
+                  {isGeocodingLocation ? <Loader2 className="w-4 h-4 animate-spin" /> : "Setzen"}
+                </Button>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
