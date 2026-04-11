@@ -21,7 +21,7 @@ interface LayerGroup {
 const LAYER_GROUPS: LayerGroup[] = [
   {
     id: "verkehr",
-    title: "VERKEHR & MOBILITÄT",
+    title: "VERKEHR",
     items: [
       { id: "oepnv", emoji: "🚌", label: "ÖPNV" },
       { id: "radweg", emoji: "🚲", label: "Radweg" },

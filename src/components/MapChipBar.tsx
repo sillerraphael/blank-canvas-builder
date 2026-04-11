@@ -14,7 +14,7 @@ interface CategoryGroup {
 const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     id: "verkehr",
-    label: "🚌 Verkehr & Mobilität",
+    label: "🚌 Verkehr",
     categoryIds: ["oepnv", "radweg", "parkplatz"],
   },
   {
