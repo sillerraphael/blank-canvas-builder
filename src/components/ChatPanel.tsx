@@ -57,6 +57,7 @@ export function ChatPanel({
   onShowOnlyCategory,
   onDisableAllCategories,
   onScenarioChange,
+  onFlyTo,
 }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MSG]);
   const [input, setInput] = useState("");
