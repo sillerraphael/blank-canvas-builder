@@ -2,84 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 228 33% 98%;
+    --foreground: 213 18% 21%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 213 18% 21%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 213 18% 21%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 213 100% 38%;
+    --primary-foreground: 228 100% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 240 3% 38%;
+    --secondary-foreground: 240 20% 99%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 225 24% 94%;
+    --muted-foreground: 215 8% 38%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 195 53% 79%;
+    --accent-foreground: 288 100% 99%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 1 42% 44%;
+    --destructive-foreground: 0 100% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 216 16% 72%;
+    --input: 216 16% 72%;
+    --ring: 213 100% 38%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Custom tokens */
+    --surface-glass: 0 0% 100% / 0.22;
+    --surface-glass-border: 0 0% 100% / 0.35;
+    --chat-glass: 0 0% 100% / 0.18;
+    --chat-bubble: 0 0% 100% / 0.55;
+    --surface-container: 228 40% 95%;
+    --surface-container-high: 222 30% 93%;
+    --on-surface-variant: 215 8% 38%;
+    --outline-variant: 216 13% 72%;
+    --tertiary: 278 59% 46%;
+    --primary-container: 222 100% 93%;
+    --on-primary-container: 213 100% 33%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 220 15% 6%;
     --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    --card: 220 15% 6%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    --popover: 220 15% 6%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
+    --primary: 213 100% 65%;
+    --primary-foreground: 213 100% 10%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 278 59% 60%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -91,6 +87,11 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --surface-glass: 220 15% 12% / 0.5;
+    --surface-glass-border: 0 0% 100% / 0.08;
+    --chat-glass: 220 15% 10% / 0.4;
+    --chat-bubble: 220 15% 15% / 0.6;
   }
 }
 
@@ -98,8 +99,258 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
   }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .glass-panel {
+    background: hsla(var(--surface-glass));
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid hsla(var(--surface-glass-border));
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.15);
+  }
+
+  .chat-panel-glass {
+    background: linear-gradient(
+      180deg,
+      hsla(0, 0%, 100%, 0.35) 0%,
+      hsla(0, 0%, 100%, 0.18) 50%,
+      hsla(0, 0%, 100%, 0.25) 100%
+    );
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 1px solid hsla(0, 0%, 100%, 0.4);
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.5),
+      inset 0 -1px 0 hsla(0, 0%, 100%, 0.1);
+  }
+
+  /* Liquid Glass Framework — main panel surface */
+  .liquid-glass-panel {
+    background: linear-gradient(
+      180deg,
+      rgba(245, 247, 249, 0.35) 0%,
+      rgba(229, 233, 235, 0.22) 50%,
+      rgba(238, 241, 243, 0.28) 100%
+    );
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    /* Ghost border — 1px white at 20% */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Ambient shadow — tinted, not gray */
+    box-shadow:
+      0 8px 40px rgba(0, 80, 212, 0.06),
+      0 2px 12px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Neutral frosted glass — premium floating chips */
+  .glass-chip {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.20) 50%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+    color: hsl(213 20% 20%);
+    transition: all 0.2s ease;
+  }
+  .glass-chip:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.48) 0%,
+      rgba(255, 255, 255, 0.28) 50%,
+      rgba(255, 255, 255, 0.35) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.10),
+      0 2px 8px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .glass-chip-active {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 122, 255, 0.18) 0%,
+      rgba(0, 122, 255, 0.10) 50%,
+      rgba(0, 122, 255, 0.14) 100%
+    );
+    backdrop-filter: blur(60px) saturate(220%);
+    -webkit-backdrop-filter: blur(60px) saturate(220%);
+    border: 1px solid rgba(0, 122, 255, 0.25);
+    box-shadow:
+      0 4px 24px rgba(0, 122, 255, 0.10),
+      0 1px 4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 122, 255, 0.06);
+  }
+  .glass-chip-active:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 122, 255, 0.24) 0%,
+      rgba(0, 122, 255, 0.14) 50%,
+      rgba(0, 122, 255, 0.18) 100%
+    );
+    border-color: rgba(0, 122, 255, 0.32);
+    box-shadow:
+      0 4px 28px rgba(0, 122, 255, 0.14),
+      0 1px 4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -1px 0 rgba(0, 122, 255, 0.08);
+  }
+
+  /* Backdrop strip behind chip row for stable contrast */
+  .glass-chip-strip {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.06) 0%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Keep blue-glass for backward compat */
+  .blue-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 80, 212, 0.7) 0%,
+      rgba(97, 139, 255, 0.55) 100%
+    );
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 4px 16px rgba(0, 80, 212, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+
+  .chat-bubble-glass {
+    background: hsla(0, 0%, 100%, 0.55);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    border: 1px solid hsla(0, 0%, 100%, 0.5);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .chat-input-glass {
+    background: hsla(0, 0%, 100%, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsla(0, 0%, 100%, 0.5);
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.3);
+  }
+
+  .chat-tag-glass {
+    background: hsla(213, 100%, 38%, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid hsla(213, 100%, 38%, 0.15);
+  }
+
+  .chat-glass {
+    background: hsla(var(--chat-glass));
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid hsla(var(--surface-glass-border));
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.12);
+  }
+
+  .chat-bubble {
+    background: hsla(var(--chat-bubble));
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid hsla(0, 0%, 100%, 0.3);
+  }
+}
+
+@keyframes marker-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes wohnort-pulse {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(251,191,36,0.25), 0 0 20px rgba(251,191,36,0.35); }
+  50% { box-shadow: 0 0 0 12px rgba(251,191,36,0.1), 0 0 30px rgba(251,191,36,0.2); }
+}
+
+.animate-marker-pulse {
+  animation: marker-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Leaflet popup overrides */
+.leaflet-popup-content-wrapper {
+  @apply rounded-2xl shadow-lg border border-outline-variant/20 bg-background p-0;
+}
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+}
+.leaflet-popup-tip {
+  @apply bg-background;
+}
+.leaflet-container {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Marker cluster styling */
+.marker-cluster-custom {
+  background: transparent !important;
+  border: none !important;
+}
+.marker-cluster-custom div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2), 0 0 0 4px rgba(255,255,255,0.5);
+  transition: transform 0.2s ease;
+}
+.marker-cluster-custom div:hover {
+  transform: scale(1.1);
+}
+.cluster-small div {
+  width: 40px;
+  height: 40px;
+  font-size: 13px;
+  background: hsl(var(--primary));
+}
+.cluster-medium div {
+  width: 50px;
+  height: 50px;
+  font-size: 14px;
+  background: hsl(var(--primary));
+}
+.cluster-large div {
+  width: 60px;
+  height: 60px;
+  font-size: 16px;
+  background: hsl(var(--primary));
 }
