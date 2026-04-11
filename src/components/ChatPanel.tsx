@@ -152,14 +152,8 @@ export function ChatPanel({
     ]);
     setInput("");
 
-    const filterResponse = parseFilterCommand(text, allCats, onEnableCategory, onDisableCategory, onShowOnlyCategory, onScenarioChange);
-    if (filterResponse) {
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, role: "assistant", content: filterResponse, time: formatTime() },
-      ]);
-      return;
-    }
+
+
 
     try {
       const filters: Record<string, boolean> = {};
