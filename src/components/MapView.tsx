@@ -310,6 +310,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   const setIsPlacingInitiative = onSetPlacingInitiative;
   const [pendingLocation, setPendingLocation] = useState<{ lat: number; lng: number } | null>(null);
   const previewMarkerRef = useRef<L.Marker | null>(null);
+  const homeMarkerRef = useRef<L.Marker | null>(null);
 
   // ── Live data from Supabase ──
   const { data: categoryData, isLoading: catLoading } = useMapCategories();
