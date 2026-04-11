@@ -41,7 +41,7 @@ const LAYER_GROUPS: LayerGroup[] = [
   },
   {
     id: "bebauung",
-    title: "BEBAUUNG & PLANUNG",
+    title: "BEBAUUNG",
     items: [
       { id: "bauprojekt", emoji: "🏗️", label: "Bauprojekte" },
       { id: "wohnungsbau", emoji: "🏠", label: "Wohnungsbau" },
