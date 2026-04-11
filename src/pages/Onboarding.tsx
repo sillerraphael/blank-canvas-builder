@@ -90,7 +90,7 @@ export default function Onboarding() {
             Was bewegt dich in deiner Stadt?
           </h1>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Wähle mindestens 3 Prioritäten — wir passen deine Kartenansicht an.
+            Wähle mindestens drei Prioritäten, damit deine Kartenansicht optimal angepasst wird.
           </p>
         </div>
 
