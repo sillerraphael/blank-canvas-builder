@@ -17,13 +17,22 @@ export interface AuthState {
   hasCompletedOnboarding: boolean;
   priorities: Record<string, PriorityLevel>;
   isLoading: boolean;
-  loginWithBayernID: () => Promise<void>;
+  loginWithBayernID: (userOverride?: Partial<BayernIDUser>) => Promise<void>;
   logout: () => void;
+  setAuthenticatedUser: (
+    nextUser: BayernIDUser,
+    options?: { hasCompletedOnboarding?: boolean; persist?: boolean }
+  ) => void;
   setPriority: (topicId: string, level: PriorityLevel) => void;
   completeOnboarding: () => void;
 }
 
 const STORAGE_KEY = "bayern_id_user";
+
+export const DEFAULT_LOCATION = {
+  lat: 48.14305255731116,
+  lng: 11.574993368397342,
+};
 
 function getInitials(name: string): string {
   const parts = name.split(/\s+/);
@@ -31,6 +40,32 @@ function getInitials(name: string): string {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }
   return name.slice(0, 2).toUpperCase();
+}
+
+function getOnboardingState(userId: string): boolean {
+  try {
+    return localStorage.getItem(`onboarding_completed_${userId}`) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function buildAuthState(nextUser: BayernIDUser) {
+  return {
+    isLoggedIn: true,
+    user: {
+      email: nextUser.email,
+      initials: getInitials(nextUser.name),
+      name: nextUser.name,
+    },
+    bayernUser: nextUser,
+    hasCompletedOnboarding: getOnboardingState(nextUser.id),
+    isLoading: false,
+  };
+}
+
+function persistUser(user: BayernIDUser) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
 }
 
 export function getStoredUser(): BayernIDUser | null {
@@ -45,15 +80,9 @@ export function getStoredUser(): BayernIDUser | null {
 function loadInitialState() {
   const stored = getStoredUser();
   if (stored) {
-    const onboardingDone = localStorage.getItem(`onboarding_completed_${stored.id}`) === "true";
-    return {
-      isLoggedIn: true,
-      user: { email: stored.email, initials: getInitials(stored.name), name: stored.name },
-      bayernUser: stored,
-      hasCompletedOnboarding: onboardingDone,
-      isLoading: false,
-    };
+    return buildAuthState(stored);
   }
+
   return {
     isLoggedIn: false,
     user: null,
@@ -68,26 +97,37 @@ const MOCK_USER: BayernIDUser = {
   name: "Peter Parker",
   email: "peter.parker@bayern.de",
   provider: "bayernID",
-  location: {
-    lat: 48.14305255731116,
-    lng: 11.574993368397342,
-  },
+  location: DEFAULT_LOCATION,
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
   ...loadInitialState(),
   priorities: {},
 
-  loginWithBayernID: async () => {
-    // Simulate redirect delay
-    await new Promise((r) => setTimeout(r, 1200));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_USER));
+  setAuthenticatedUser: (nextUser, options) => {
+    if (options?.persist !== false) {
+      persistUser(nextUser);
+    }
+
     set({
-      isLoggedIn: true,
-      user: { email: MOCK_USER.email, initials: getInitials(MOCK_USER.name), name: MOCK_USER.name },
-      bayernUser: MOCK_USER,
-      hasCompletedOnboarding: false,
-      isLoading: false,
+      ...buildAuthState(nextUser),
+      hasCompletedOnboarding: options?.hasCompletedOnboarding ?? getOnboardingState(nextUser.id),
+    });
+  },
+
+  loginWithBayernID: async (userOverride) => {
+    await new Promise((r) => setTimeout(r, 1200));
+
+    const nextUser: BayernIDUser = {
+      ...MOCK_USER,
+      ...userOverride,
+      location: userOverride?.location ?? MOCK_USER.location,
+    };
+
+    persistUser(nextUser);
+    set({
+      ...buildAuthState(nextUser),
+      hasCompletedOnboarding: true,
     });
   },
 
@@ -96,6 +136,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (stored) {
       localStorage.removeItem(`onboarding_completed_${stored.id}`);
     }
+
     localStorage.removeItem(STORAGE_KEY);
     set({
       isLoggedIn: false,
@@ -103,6 +144,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       bayernUser: null,
       hasCompletedOnboarding: false,
       priorities: {},
+      isLoading: false,
     });
   },
 

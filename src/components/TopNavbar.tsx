@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuthStore } from "@/lib/authStore";
+import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
 import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
@@ -34,7 +34,7 @@ interface TopNavbarProps {
 export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, hasCompletedOnboarding, user, logout } = useAuthStore();
+  const { isLoggedIn, hasCompletedOnboarding, user, logout, setAuthenticatedUser } = useAuthStore();
 
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -45,7 +45,6 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBayernRedirecting, setIsBayernRedirecting] = useState(false);
 
-  // Settings toggles (local state placeholders)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
@@ -56,20 +55,31 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
       toast.error("Bitte E-Mail und Passwort eingeben");
       return;
     }
+
     setIsSubmitting(true);
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setIsSubmitting(false);
+
     if (error) {
       toast.error(error.message);
-    } else if (data.user) {
+      return;
+    }
+
+    if (data.user) {
       const name = data.user.user_metadata?.full_name || data.user.email || "User";
       const emailVal = data.user.email || "";
-      const initials = emailVal.slice(0, 2).toUpperCase();
-      useAuthStore.setState({
-        isLoggedIn: true,
-        user: { email: emailVal, initials, name },
-        hasCompletedOnboarding: true,
-      });
+
+      setAuthenticatedUser(
+        {
+          id: data.user.id,
+          name,
+          email: emailVal,
+          provider: "supabase",
+          location: useAuthStore.getState().bayernUser?.location ?? DEFAULT_LOCATION,
+        },
+        { hasCompletedOnboarding: true }
+      );
+
       toast.success("Erfolgreich eingeloggt!");
       setShowLoginDialog(false);
       navigate("/");
@@ -105,6 +115,12 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
     await new Promise((r) => setTimeout(r, 1200));
     setIsBayernRedirecting(false);
     navigate("/bayernid-login");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    logout();
+    navigate("/");
   };
 
   return (
@@ -180,7 +196,9 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="gap-2 cursor-pointer text-destructive"
-                  onClick={() => { logout(); navigate("/"); }}
+                  onClick={() => {
+                    void handleLogout();
+                  }}
                 >
                   <LogOut className="w-4 h-4" /> Abmelden
                 </DropdownMenuItem>
