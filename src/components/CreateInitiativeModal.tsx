@@ -61,13 +61,6 @@ export function CreateInitiativeModal({ lat, lng, onClose, onSubmit, isSubmittin
             </button>
           </div>
 
-          {/* Location info */}
-          <div className="px-5 pt-3">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-              <MapPin className="w-3 h-3" />
-              <span>Position: {lat.toFixed(5)}, {lng.toFixed(5)}</span>
-            </div>
-          </div>
 
           {/* Form */}
           <div className="px-5 py-4 space-y-4">
