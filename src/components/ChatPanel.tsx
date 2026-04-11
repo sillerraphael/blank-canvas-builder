@@ -182,6 +182,12 @@ export function ChatPanel({
             if (parsed && typeof parsed === "object" && "reply" in parsed) {
               displayText = parsed.reply;
               handleMapAction(parsed.map_action);
+              // Fly to location if coordinates provided
+              const lat = parsed.target_lat;
+              const lng = parsed.target_lng;
+              if (typeof lat === "number" && typeof lng === "number" && isFinite(lat) && isFinite(lng)) {
+                onFlyTo(lat, lng, 15);
+              }
             }
           } catch { /* raw text */ }
           setMessages((prev) => [
