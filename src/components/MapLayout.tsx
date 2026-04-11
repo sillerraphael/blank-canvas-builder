@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import type { MapFlyTo } from "@/components/MapView";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { TopNavbar } from "@/components/TopNavbar";
@@ -31,6 +32,7 @@ export default function MapLayout() {
 
   const [disabledCategories, setDisabledCategories] = useState<Set<string>>(new Set());
   const initializedRef = useRef(false);
+  const flyToRef = useRef<MapFlyTo | null>(null);
 
   useEffect(() => {
     if (initializedRef.current) return;
@@ -98,6 +100,7 @@ export default function MapLayout() {
           onToggleCategory={toggleCategory}
           isPlacingInitiative={isPlacingInitiative}
           onSetPlacingInitiative={setIsPlacingInitiative}
+          flyToRef={flyToRef}
         />
 
         {/* Chat panel only on map page */}
@@ -110,6 +113,7 @@ export default function MapLayout() {
             onShowOnlyCategory={showOnlyCategory}
             onDisableAllCategories={disableAllCategories}
             onScenarioChange={setActiveScenario}
+            onFlyTo={(lat, lng, zoom) => flyToRef.current?.(lat, lng, zoom)}
           />
         )}
 
