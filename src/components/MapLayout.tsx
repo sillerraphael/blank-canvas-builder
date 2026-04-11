@@ -100,6 +100,7 @@ export default function MapLayout() {
           onToggleCategory={toggleCategory}
           isPlacingInitiative={isPlacingInitiative}
           onSetPlacingInitiative={setIsPlacingInitiative}
+          flyToRef={flyToRef}
         />
 
         {/* Chat panel only on map page */}
@@ -112,6 +113,7 @@ export default function MapLayout() {
             onShowOnlyCategory={showOnlyCategory}
             onDisableAllCategories={disableAllCategories}
             onScenarioChange={setActiveScenario}
+            onFlyTo={(lat, lng, zoom) => flyToRef.current?.(lat, lng, zoom)}
           />
         )}
 
