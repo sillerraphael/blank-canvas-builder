@@ -142,7 +142,6 @@ export default function Onboarding() {
               : `${selectedCount}/3 ausgewählt`}
           </p>
         </div>
-        </div>
       </div>
     </div>
   );
