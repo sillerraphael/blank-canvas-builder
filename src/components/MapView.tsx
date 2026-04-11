@@ -813,7 +813,13 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         _description: line.description,
       } as any);
       midMarker.bindPopup(buildLinePopup(line), { closeButton: false, maxWidth: 320 });
-      clusterGroup.addLayer(midMarker);
+      const lineCluster = getOrCreateCluster(line.category);
+      lineCluster.addLayer(midMarker);
+      if (!categoryClusterMap.has(line.category)) {
+        map.addLayer(lineCluster);
+        clusterGroupsRef.current.push(lineCluster);
+        layersRef.current.push(lineCluster);
+      }
     });
 
     // Render lines: use `path` if available, otherwise waypoints + OSRM fallback
