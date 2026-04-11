@@ -45,7 +45,7 @@ export default function Subscriptions() {
 
   // Match subscribed IDs to marker data
   const subSet = new Set(subscribedIds ?? []);
-  const allMarkers = markersData?.markers ?? [];
+  const allMarkers = markersData ?? [];
   const items = allMarkers.filter((m) => subSet.has(m.id));
 
   return (
