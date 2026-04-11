@@ -761,7 +761,63 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
       lineCluster.addLayer(midMarker);
     });
 
-    // Render lines: use `path` if available, otherwise waypoints + OSRM fallback
+    // Add all per-category cluster groups to map (after all markers incl. line midpoints are added)
+    categoryClusterMap.forEach((cg) => {
+      map.addLayer(cg);
+      clusterGroupsRef.current.push(cg);
+      layersRef.current.push(cg);
+
+      cg.on("clusterclick", (e: any) => {
+        const children = e.layer.getAllChildMarkers();
+        const statusColors: Record<string, string> = {
+          Bestand: "background:#dbeafe;color:#1e40af",
+          Aktiv: "background:#d1fae5;color:#065f46",
+          "Im Bau": "background:#fef3c7;color:#92400e",
+          Offen: "background:#fee2e2;color:#991b1b",
+          Geplant: "background:#ede9fe;color:#5b21b6",
+          Planung: "background:#e0e7ff;color:#3730a3",
+          Bestehend: "background:#dbeafe;color:#1e40af",
+          Vorhanden: "background:#d1fae5;color:#065f46",
+          Fiktiv: "background:#fee2e2;color:#991b1b",
+        };
+
+        const itemsHtml = children.map((m: any) => {
+          const catId = m.options._categoryId ?? "";
+          const catMeta = getCategoryMeta(catId);
+          const emoji = catMeta?.emoji ?? "📍";
+          const label = m.options._label ?? catMeta?.label ?? "Unbekannt";
+          const status = m.options._status ?? "";
+          const description = m.options._description ?? "";
+          const badgeStyle = status ? (statusColors[status] || "background:#f3f4f6;color:#374151") : "";
+          const statusBadge = status
+            ? `<span style="padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600;white-space:nowrap;${badgeStyle}">${status}</span>`
+            : "";
+          return `
+            <div style="padding:8px 0;${children.indexOf(m) < children.length - 1 ? 'border-bottom:1px solid #f3f4f6;' : ''}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px">
+                <strong style="font-size:13px;line-height:1.3">${emoji} ${label}</strong>
+                ${statusBadge}
+              </div>
+              ${description ? `<p style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">${description}</p>` : ""}
+            </div>
+          `;
+        }).join("");
+
+        const popupHtml = `
+          <div style="min-width:220px;max-height:300px;overflow-y:auto;font-family:Inter,sans-serif">
+            <div style="font-size:11px;color:#9ca3af;font-weight:600;margin-bottom:8px">${children.length} Einträge in dieser Gruppe</div>
+            ${itemsHtml}
+          </div>
+        `;
+
+        L.popup({ closeButton: false, maxWidth: 320 })
+          .setLatLng(e.layer.getLatLng())
+          .setContent(popupHtml)
+          .openOn(map);
+      });
+    });
+
+
     const lineRefs = new Map<number, { shadowLine: L.Polyline; polyline: L.Polyline }>();
     visibleLines.forEach((line) => {
       const pathPoints = line.path && line.path.length >= 2 ? line.path : null;
