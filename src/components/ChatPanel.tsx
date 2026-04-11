@@ -33,59 +33,6 @@ function formatTime() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-// ── Filter command parser ──────────────────────────────────
-function parseFilterCommand(
-  text: string,
-  cats: MarkerCategory[],
-  onEnable: (id: string) => void,
-  onDisable: (id: string) => void,
-  onShowOnly: (id: string) => void,
-  onScenario: (id: ScenarioId) => void
-): string | null {
-  const lower = text.toLowerCase().trim();
-
-  const scenarioAliases: Record<ScenarioId, string[]> = {
-    realitaet: ["realität", "realitaet", "aktuelle realität", "aktuell", "current", "jetzt", "ist-zustand"],
-    zukunft: ["zukunft", "geplante zukunft", "geplant", "stadtrat", "planned", "future"],
-  };
-  for (const s of scenarios) {
-    const aliases = scenarioAliases[s.id] || [];
-    const allTerms = [s.label.toLowerCase(), s.id.toLowerCase(), ...aliases];
-    if (allTerms.some((term) => lower.includes(term))) {
-      onScenario(s.id);
-      return `✅ Szenario gewechselt zu **${s.label}** — ${s.description}.`;
-    }
-  }
-
-  const showOnlyMatch = lower.match(/(?:zeige nur|show only|nur)\s+(.+)/);
-  if (showOnlyMatch) {
-    const cat = findCat(showOnlyMatch[1], cats);
-    if (cat) { onShowOnly(cat.id); return `✅ Zeige nur **${cat.emoji} ${cat.label}**.`; }
-  }
-
-  const turnOnMatch = lower.match(/(?:turn on|schalte .+ ein|aktiviere|enable)\s*(.+)?/) ||
-    lower.match(/(.+?)\s+(?:ein(?:schalten)?|aktivieren|on)$/);
-  if (turnOnMatch) {
-    const term = turnOnMatch[1]?.replace(/\s*(ein|einschalten|on)\s*/g, "").trim();
-    if (term) {
-      const cat = findCat(term, cats);
-      if (cat) { onEnable(cat.id); return `✅ **${cat.emoji} ${cat.label}** ist jetzt aktiv.`; }
-    }
-  }
-
-  const turnOffMatch = lower.match(/(?:turn off|schalte .+ aus|deaktiviere|disable)\s*(.+)?/) ||
-    lower.match(/(.+?)\s+(?:aus(?:schalten)?|deaktivieren|off)$/);
-  if (turnOffMatch) {
-    const term = turnOffMatch[1]?.replace(/\s*(aus|ausschalten|off)\s*/g, "").trim();
-    if (term) {
-      const cat = findCat(term, cats);
-      if (cat) { onDisable(cat.id); return `✅ **${cat.emoji} ${cat.label}** ist jetzt deaktiviert.`; }
-    }
-  }
-
-  return null;
-}
-
 function findCat(term: string, cats: MarkerCategory[]) {
   const t = term.toLowerCase().trim();
   return cats.find(
@@ -205,14 +152,8 @@ export function ChatPanel({
     ]);
     setInput("");
 
-    const filterResponse = parseFilterCommand(text, allCats, onEnableCategory, onDisableCategory, onShowOnlyCategory, onScenarioChange);
-    if (filterResponse) {
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, role: "assistant", content: filterResponse, time: formatTime() },
-      ]);
-      return;
-    }
+
+
 
     try {
       const filters: Record<string, boolean> = {};
