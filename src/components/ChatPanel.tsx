@@ -20,6 +20,7 @@ interface ChatPanelProps {
   onShowOnlyCategory: (id: string) => void;
   onDisableAllCategories: () => void;
   onScenarioChange: (id: ScenarioId) => void;
+  onFlyTo: (lat: number, lng: number, zoom?: number) => void;
 }
 
 const WELCOME_MSG: Message = {
