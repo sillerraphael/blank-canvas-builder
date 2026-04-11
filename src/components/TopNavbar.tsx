@@ -232,9 +232,35 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
               <p className="text-lg font-semibold text-foreground">{user?.name ?? "Benutzer"}</p>
               <p className="text-sm text-muted-foreground">{user?.email ?? "–"}</p>
             </div>
-            <Button variant="outline" className="rounded-xl mt-2" onClick={() => toast.info("Profil bearbeiten kommt bald!")}>
-              Profil bearbeiten
-            </Button>
+
+            <div className="w-full space-y-2 mt-2">
+              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-primary" />
+                Mein Standort
+              </label>
+              <p className="text-xs text-muted-foreground">
+                {bayernUser?.location
+                  ? `${bayernUser.location.lat.toFixed(4)}, ${bayernUser.location.lng.toFixed(4)}`
+                  : "Nicht festgelegt"}
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="z.B. Marienplatz, München"
+                  className="rounded-xl text-sm"
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleGeocodeLocation()}
+                />
+                <Button
+                  size="sm"
+                  className="rounded-xl shrink-0"
+                  onClick={handleGeocodeLocation}
+                  disabled={isGeocodingLocation || !locationInput.trim()}
+                >
+                  {isGeocodingLocation ? <Loader2 className="w-4 h-4 animate-spin" /> : "Setzen"}
+                </Button>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
