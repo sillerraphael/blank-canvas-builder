@@ -92,11 +92,6 @@ export default function Onboarding() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             Wähle mindestens 3 Prioritäten — wir passen deine Kartenansicht an.
           </p>
-          {/* Progress */}
-          <div className="mx-auto max-w-[200px] h-1 rounded-full bg-muted overflow-hidden mt-4">
-            <div className="h-full bg-primary/60 rounded-full transition-all" style={{ width: "50%" }} />
-          </div>
-          <p className="text-xs text-muted-foreground/60">Schritt 1 von 2</p>
         </div>
 
         {/* Topic tiles */}
