@@ -123,7 +123,7 @@ export default function Onboarding() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full rounded-xl text-sm text-muted-foreground bg-transparent border-transparent hover:bg-muted/40"
+            className="w-full rounded-xl text-sm text-muted-foreground bg-transparent border-transparent hover:bg-muted/40 hover:text-muted-foreground"
             onClick={() => {
               completeOnboarding();
               navigate("/");
