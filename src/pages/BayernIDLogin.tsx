@@ -1,25 +1,56 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, ShieldCheck } from "lucide-react";
-import { useAuthStore } from "@/lib/authStore";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
 
 export default function BayernIDLogin() {
   const navigate = useNavigate();
-  const { loginWithBayernID } = useAuthStore();
+  const { setAuthenticatedUser } = useAuthStore();
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Bitte E-Mail und Passwort eingeben");
+      return;
+    }
+
     setIsAuthenticating(true);
-    await loginWithBayernID();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setIsAuthenticating(false);
-    navigate("/onboarding");
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    if (!data.user) {
+      toast.error("Login fehlgeschlagen");
+      return;
+    }
+
+    const name = data.user.user_metadata?.full_name || data.user.email || "User";
+
+    setAuthenticatedUser(
+      {
+        id: data.user.id,
+        name,
+        email: data.user.email || email,
+        provider: "bayernID",
+        location: useAuthStore.getState().bayernUser?.location ?? DEFAULT_LOCATION,
+      },
+      { hasCompletedOnboarding: true }
+    );
+
+    toast.success("Erfolgreich eingeloggt!");
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f0f4f8" }}>
-      {/* Header */}
       <header
         className="w-full px-6 py-4 flex items-center gap-3 shadow-sm"
         style={{ backgroundColor: "#003b80" }}
@@ -30,10 +61,8 @@ export default function BayernIDLogin() {
         </span>
       </header>
 
-      {/* Main */}
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-          {/* Card header */}
           <div
             className="px-6 py-5 border-b border-gray-100 text-center"
             style={{ backgroundColor: "#f8fafc" }}
@@ -46,7 +75,6 @@ export default function BayernIDLogin() {
             </p>
           </div>
 
-          {/* Form */}
           <div className="p-6 space-y-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-700">
@@ -98,7 +126,6 @@ export default function BayernIDLogin() {
             </div>
           </div>
 
-          {/* Footer */}
           <div
             className="px-6 py-4 border-t border-gray-100 text-center"
             style={{ backgroundColor: "#f8fafc" }}
@@ -110,7 +137,6 @@ export default function BayernIDLogin() {
         </div>
       </main>
 
-      {/* Page footer */}
       <footer className="py-4 text-center text-xs text-gray-400">
         © 2026 Freistaat Bayern – BayernID Portal (Demo)
       </footer>
