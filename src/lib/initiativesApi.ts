@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 const API_BASE = "https://blog.bauer-jakob.de/api/v1/community-initiatives";
 
 export interface CommunityInitiativeResponse {
@@ -46,11 +48,14 @@ export async function createCommunityInitiative(
   return res.json();
 }
 
-// --- Local vote tracking (until backend supports voting) ---
-
 const VOTES_KEY = "individuWahl_votes";
 
 export type VoteType = "up" | "down" | null;
+
+interface VoteDelta {
+  upvotes: number;
+  downvotes: number;
+}
 
 export function getLocalVotes(): Record<string, VoteType> {
   try {
@@ -65,31 +70,70 @@ function saveLocalVotes(votes: Record<string, VoteType>) {
   localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
 }
 
-export function toggleVote(
-  initiativeId: string | number,
-  direction: "up" | "down"
-): { newVote: VoteType; delta: { upvotes: number; downvotes: number } } {
-  const id = String(initiativeId);
-  const votes = getLocalVotes();
-  const current = votes[id] ?? null;
-
-  let delta = { upvotes: 0, downvotes: 0 };
+function getVoteChange(current: VoteType, direction: "up" | "down") {
+  const delta: VoteDelta = { upvotes: 0, downvotes: 0 };
 
   if (current === direction) {
-    // Undo vote
-    delete votes[id];
     delta[direction === "up" ? "upvotes" : "downvotes"] = -1;
-    saveLocalVotes(votes);
-    return { newVote: null, delta };
+    return { newVote: null as VoteType, delta };
   }
 
-  // Remove old vote if switching
   if (current === "up") delta.upvotes = -1;
   if (current === "down") delta.downvotes = -1;
 
-  // Add new vote
   delta[direction === "up" ? "upvotes" : "downvotes"] += 1;
-  votes[id] = direction;
+  return { newVote: direction as VoteType, delta };
+}
+
+export async function toggleVote(
+  initiativeId: string | number,
+  direction: "up" | "down"
+): Promise<{
+  newVote: VoteType;
+  delta: VoteDelta;
+  counts: { upvotes: number; downvotes: number };
+}> {
+  const id = String(initiativeId);
+  const votes = getLocalVotes();
+  const current = votes[id] ?? null;
+  const { newVote, delta } = getVoteChange(current, direction);
+
+  const { data: currentRow, error: fetchError } = await supabase
+    .from("community_initiatives")
+    .select("id, upvotes, downvotes")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const nextCounts = {
+    upvotes: Math.max(0, (currentRow.upvotes ?? 0) + delta.upvotes),
+    downvotes: Math.max(0, (currentRow.downvotes ?? 0) + delta.downvotes),
+  };
+
+  const { data: updatedRow, error: updateError } = await supabase
+    .from("community_initiatives")
+    .update(nextCounts)
+    .eq("id", id)
+    .select("upvotes, downvotes")
+    .single();
+
+  if (updateError) throw updateError;
+
+  if (newVote === null) {
+    delete votes[id];
+  } else {
+    votes[id] = newVote;
+  }
+
   saveLocalVotes(votes);
-  return { newVote: direction, delta };
+
+  return {
+    newVote,
+    delta,
+    counts: {
+      upvotes: updatedRow?.upvotes ?? nextCounts.upvotes,
+      downvotes: updatedRow?.downvotes ?? nextCounts.downvotes,
+    },
+  };
 }
