@@ -64,7 +64,7 @@ function loadInitialState() {
 }
 
 const MOCK_USER: BayernIDUser = {
-  id: "bayern-pp-001",
+  id: "00000000-0000-0000-0000-000000000001",
   name: "Peter Parker",
   email: "peter.parker@bayern.de",
   provider: "bayernID",

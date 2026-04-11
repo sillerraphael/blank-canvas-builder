@@ -28,7 +28,10 @@ async function addSubscription(userId: string, eventId: number) {
   const { error } = await supabase
     .from("subscriptions")
     .insert({ user_id: userId, event_id: eventId });
-  if (error) throw error;
+  if (error) {
+    console.error("Subscription insert error:", error);
+    throw error;
+  }
 }
 
 async function removeSubscription(userId: string, eventId: number) {
@@ -37,7 +40,10 @@ async function removeSubscription(userId: string, eventId: number) {
     .delete()
     .eq("user_id", userId)
     .eq("event_id", eventId);
-  if (error) throw error;
+  if (error) {
+    console.error("Subscription delete error:", error);
+    throw error;
+  }
 }
 
 export function useSubscriptions() {
