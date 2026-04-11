@@ -424,7 +424,6 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
           },
         }
       );
-      );
     };
     container.addEventListener("click", handler);
     return () => container.removeEventListener("click", handler);
