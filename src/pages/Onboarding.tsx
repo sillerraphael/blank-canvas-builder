@@ -118,10 +118,13 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen bg-background">
       <motion.button
-        onClick={() => navigate("/")}
+        onClick={() => {
+          completeOnboarding();
+          navigate("/");
+        }}
         className="fixed top-6 right-6 z-[9999] cursor-pointer bg-primary hover:bg-primary/80 text-primary-foreground rounded-full px-6 py-2.5 text-sm font-medium border-none"
         initial={{ opacity: 1 }}
-        animate={{ opacity: showSkip ? 1 : 0, pointerEvents: showSkip ? "auto" : "none" }}
+        animate={{ opacity: showSkip ? 1 : 0.4 }}
         transition={{ duration: 0.25 }}
       >
         Skip
