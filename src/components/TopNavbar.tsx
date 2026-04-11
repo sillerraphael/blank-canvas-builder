@@ -125,6 +125,31 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
     navigate("/");
   };
 
+  const handleGeocodeLocation = async () => {
+    const query = locationInput.trim();
+    if (!query) return;
+    setIsGeocodingLocation(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
+      );
+      const data = await res.json();
+      if (data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lng = parseFloat(data[0].lon);
+        updateLocation(lat, lng);
+        setLocationInput("");
+        toast.success(`Standort aktualisiert: ${data[0].display_name.split(",").slice(0, 2).join(",")}`);
+      } else {
+        toast.error("Adresse nicht gefunden");
+      }
+    } catch {
+      toast.error("Geocoding fehlgeschlagen");
+    } finally {
+      setIsGeocodingLocation(false);
+    }
+  };
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[55] flex justify-between items-center px-8 h-[72px] glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20">
