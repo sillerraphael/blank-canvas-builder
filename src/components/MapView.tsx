@@ -99,6 +99,7 @@ function buildPopup(m: MapMarkerData, subscribedIds?: Set<number>) {
     Vorschlag: "background:#fef3c7;color:#92400e",
     Vorhanden: "background:#d1fae5;color:#065f46",
     Bestehend: "background:#dbeafe;color:#1e40af",
+    Fiktiv: "background:#fee2e2;color:#991b1b",
   };
   const badgeStyle = m.status ? statusColors[m.status] || "background:#f3f4f6;color:#374151" : "";
   const cat = getCategoryMeta(m.category);
@@ -201,6 +202,7 @@ function buildLinePopup(line: StreetLineData) {
     Planung: "background:#e0e7ff;color:#3730a3",
     Geplant: "background:#ede9fe;color:#5b21b6",
     Vorschlag: "background:#fef3c7;color:#92400e",
+    Fiktiv: "background:#fee2e2;color:#991b1b",
   };
   const badgeStyle = line.status ? statusColors[line.status] || "background:#f3f4f6;color:#374151" : "";
   const cat = getCategoryMeta(line.category);
@@ -623,6 +625,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         Planung: "background:#e0e7ff;color:#3730a3",
         Bestehend: "background:#dbeafe;color:#1e40af",
         Vorhanden: "background:#d1fae5;color:#065f46",
+        Fiktiv: "background:#fee2e2;color:#991b1b",
       };
 
       const itemsHtml = children.map((m: any) => {
