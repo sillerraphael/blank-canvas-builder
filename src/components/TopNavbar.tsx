@@ -49,11 +49,19 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
       return;
     }
     setIsSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setIsSubmitting(false);
     if (error) {
       toast.error(error.message);
-    } else {
+    } else if (data.user) {
+      const name = data.user.user_metadata?.full_name || data.user.email || "User";
+      const emailVal = data.user.email || "";
+      const initials = emailVal.slice(0, 2).toUpperCase();
+      useAuthStore.setState({
+        isLoggedIn: true,
+        user: { email: emailVal, initials, name },
+        hasCompletedOnboarding: true,
+      });
       toast.success("Erfolgreich eingeloggt!");
       setShowLoginDialog(false);
       navigate("/");
