@@ -292,7 +292,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Layer[]>([]);
-  const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
+  const clusterGroupsRef = useRef<L.MarkerClusterGroup[]>([]);
   const initialFitDoneRef = useRef(false);
 
   // (cluster popups use native Leaflet popups — no React state needed)
@@ -506,10 +506,8 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
 
     layersRef.current.forEach((l) => l.remove());
     layersRef.current = [];
-    if (clusterGroupRef.current) {
-      map.removeLayer(clusterGroupRef.current);
-      clusterGroupRef.current = null;
-    }
+    clusterGroupsRef.current.forEach((cg) => map.removeLayer(cg));
+    clusterGroupsRef.current = [];
 
     const boundsLayers: L.Layer[] = [];
 
