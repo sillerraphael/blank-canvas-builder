@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import type { MapFlyTo } from "@/components/MapView";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { TopNavbar } from "@/components/TopNavbar";
@@ -31,6 +32,7 @@ export default function MapLayout() {
 
   const [disabledCategories, setDisabledCategories] = useState<Set<string>>(new Set());
   const initializedRef = useRef(false);
+  const flyToRef = useRef<MapFlyTo | null>(null);
 
   useEffect(() => {
     if (initializedRef.current) return;

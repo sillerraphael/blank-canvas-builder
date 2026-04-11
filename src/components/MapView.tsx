@@ -267,6 +267,8 @@ function buildLinePopup(line: StreetLineData) {
   `;
 }
 
+export type MapFlyTo = (lat: number, lng: number, zoom?: number) => void;
+
 interface MapViewProps {
   activeScenario: ScenarioId;
   onScenarioChange: (id: ScenarioId) => void;
@@ -274,10 +276,20 @@ interface MapViewProps {
   onToggleCategory: (id: string) => void;
   isPlacingInitiative: boolean;
   onSetPlacingInitiative: (v: boolean) => void;
+  flyToRef?: React.MutableRefObject<MapFlyTo | null>;
 }
 
-export function MapView({ activeScenario, onScenarioChange, disabledCategories, onToggleCategory, isPlacingInitiative, onSetPlacingInitiative }: MapViewProps) {
+export function MapView({ activeScenario, onScenarioChange, disabledCategories, onToggleCategory, isPlacingInitiative, onSetPlacingInitiative, flyToRef }: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
+
+  // Expose flyTo to parent
+  useEffect(() => {
+    if (flyToRef) {
+      flyToRef.current = (lat: number, lng: number, zoom = 15) => {
+        mapRef.current?.flyTo([lat, lng], zoom, { duration: 1.5 });
+      };
+    }
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Layer[]>([]);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
