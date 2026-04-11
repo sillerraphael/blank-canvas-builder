@@ -292,7 +292,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Layer[]>([]);
-  const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
+  const clusterGroupsRef = useRef<L.MarkerClusterGroup[]>([]);
   const initialFitDoneRef = useRef(false);
 
   // (cluster popups use native Leaflet popups — no React state needed)
@@ -506,51 +506,53 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
 
     layersRef.current.forEach((l) => l.remove());
     layersRef.current = [];
-    if (clusterGroupRef.current) {
-      map.removeLayer(clusterGroupRef.current);
-      clusterGroupRef.current = null;
-    }
+    clusterGroupsRef.current.forEach((cg) => map.removeLayer(cg));
+    clusterGroupsRef.current = [];
 
     const boundsLayers: L.Layer[] = [];
 
-    // ── Create cluster group (L0 → L1 progressive disclosure) ──
-    const clusterGroup = (L as any).markerClusterGroup({
-      maxClusterRadius: 60,
-      disableClusteringAtZoom: 15, // L1: individual markers at zoom ≥ 15
-      spiderfyOnMaxZoom: true,
-      showCoverageOnHover: false,
-      zoomToBoundsOnClick: false,
-      animate: true,
-      animateAddingMarkers: true,
-      iconCreateFunction: (cluster: any) => {
-        const count = cluster.getChildCount();
-        // Determine dominant category color
-        const children = cluster.getAllChildMarkers();
-        const catCounts: Record<string, number> = {};
-        children.forEach((m: any) => {
-          const cat = m.options._categoryId;
-          if (cat) catCounts[cat] = (catCounts[cat] || 0) + 1;
-        });
-        const dominantCat = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-        const catMeta = dominantCat ? getCategoryMeta(dominantCat) : null;
-        const bgColor = catMeta?.markerBg ?? "hsl(var(--primary))";
-        const emoji = catMeta?.emoji ?? "📍";
+    // Helper: create a per-category cluster group
+    const createCategoryCluster = (categoryId: string) => {
+      const catMeta = getCategoryMeta(categoryId);
+      const bgColor = catMeta?.markerBg ?? "hsl(var(--primary))";
+      const emoji = catMeta?.emoji ?? "📍";
 
-        const sizeClass = count < 10 ? "cluster-small" : count < 30 ? "cluster-medium" : "cluster-large";
-        const size = count < 10 ? 40 : count < 30 ? 50 : 60;
+      return (L as any).markerClusterGroup({
+        maxClusterRadius: 60,
+        disableClusteringAtZoom: 15,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: false,
+        animate: true,
+        animateAddingMarkers: true,
+        iconCreateFunction: (cluster: any) => {
+          const count = cluster.getChildCount();
+          const sizeClass = count < 10 ? "cluster-small" : count < 30 ? "cluster-medium" : "cluster-large";
+          const size = count < 10 ? 40 : count < 30 ? 50 : 60;
 
-        return L.divIcon({
-          html: `<div style="background:${bgColor};width:${size}px;height:${size}px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:${count < 10 ? 12 : 14}px;box-shadow:0 4px 20px rgba(0,0,0,0.2),0 0 0 4px rgba(255,255,255,0.5);font-family:Inter,sans-serif;line-height:1">
-            <span style="font-size:14px">${emoji}</span>
-            <span>${count}</span>
-          </div>`,
-          className: `marker-cluster-custom ${sizeClass}`,
-          iconSize: L.point(size, size),
-        });
-      },
-    });
+          return L.divIcon({
+            html: `<div style="background:${bgColor};width:${size}px;height:${size}px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:${count < 10 ? 12 : 14}px;box-shadow:0 4px 20px rgba(0,0,0,0.2),0 0 0 4px rgba(255,255,255,0.5);font-family:Inter,sans-serif;line-height:1">
+              <span style="font-size:14px">${emoji}</span>
+              <span>${count}</span>
+            </div>`,
+            className: `marker-cluster-custom ${sizeClass}`,
+            iconSize: L.point(size, size),
+          });
+        },
+      });
+    };
 
-    // ── Render point markers into cluster group ──
+    // Map of categoryId → cluster group
+    const categoryClusterMap = new Map<string, any>();
+
+    const getOrCreateCluster = (categoryId: string) => {
+      if (!categoryClusterMap.has(categoryId)) {
+        categoryClusterMap.set(categoryId, createCategoryCluster(categoryId));
+      }
+      return categoryClusterMap.get(categoryId)!;
+    };
+
+    // ── Render point markers into per-category cluster groups ──
     const visibleMarkers = (markersData ?? []).filter(
       (m) => !disabledCategories.has(m.category),
     );
@@ -598,11 +600,13 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         _description: m.description,
       } as any)
         .bindPopup(buildPopup(m, subscribedIds), { closeButton: false, maxWidth: 300 });
+
+      const clusterGroup = getOrCreateCluster(m.category);
       clusterGroup.addLayer(marker);
       boundsLayers.push(marker);
     });
 
-    // ── Render community initiatives into cluster group ──
+    // ── Render community initiatives into their own cluster group ──
     if (!disabledCategories.has("initiative") && initiatives) {
       initiatives.forEach((ci) => {
         const size = 34;
@@ -643,19 +647,22 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
           _description: ci.description ?? "",
         } as any)
           .bindPopup(popup, { closeButton: false, maxWidth: 300 });
+
+        const clusterGroup = getOrCreateCluster("initiative");
         clusterGroup.addLayer(m);
         boundsLayers.push(m);
       });
     }
 
-    // Add cluster group to map
-    map.addLayer(clusterGroup);
-    clusterGroupRef.current = clusterGroup;
-    layersRef.current.push(clusterGroup);
+    // Add all per-category cluster groups to map
+    categoryClusterMap.forEach((cg) => {
+      map.addLayer(cg);
+      clusterGroupsRef.current.push(cg);
+      layersRef.current.push(cg);
 
-    // ── Cluster click → open Leaflet popup with all items ──
-    clusterGroup.on("clusterclick", (e: any) => {
-      const children = e.layer.getAllChildMarkers();
+      // ── Cluster click → open popup with items ──
+      cg.on("clusterclick", (e: any) => {
+        const children = e.layer.getAllChildMarkers();
       const statusColors: Record<string, string> = {
         Bestand: "background:#dbeafe;color:#1e40af",
         Aktiv: "background:#d1fae5;color:#065f46",
@@ -701,6 +708,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         .setLatLng(e.layer.getLatLng())
         .setContent(popupHtml)
         .openOn(map);
+      });
     });
 
     // ── Render street polylines & resolve OSRM routes ──
@@ -805,7 +813,13 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         _description: line.description,
       } as any);
       midMarker.bindPopup(buildLinePopup(line), { closeButton: false, maxWidth: 320 });
-      clusterGroup.addLayer(midMarker);
+      const lineCluster = getOrCreateCluster(line.category);
+      lineCluster.addLayer(midMarker);
+      if (!categoryClusterMap.has(line.category)) {
+        map.addLayer(lineCluster);
+        clusterGroupsRef.current.push(lineCluster);
+        layersRef.current.push(lineCluster);
+      }
     });
 
     // Render lines: use `path` if available, otherwise waypoints + OSRM fallback
