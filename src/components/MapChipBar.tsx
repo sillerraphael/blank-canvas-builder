@@ -24,7 +24,7 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     id: "bebauung",
-    label: "🏗️ Bebauung & Planung",
+    label: "🏗️ Bebauung",
     categoryIds: ["bauprojekt"],
   },
   {
