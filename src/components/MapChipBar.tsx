@@ -183,7 +183,23 @@ export function MapChipBar({
 
   return (
     <div className="flex flex-col gap-2 pointer-events-auto">
-      {/* Category filter buttons (top) */}
+      {/* Scenario pill toggle */}
+      <div className="flex flex-wrap justify-start gap-1.5">
+        {scenarios.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => onScenarioChange(s.id)}
+            className={`
+              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 whitespace-nowrap shrink-0
+              glass-chip ${activeScenario === s.id ? "glass-chip-active font-medium text-foreground" : "font-medium text-foreground/70"}
+            `}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Group dropdown buttons + initiative chip */}
       <div className="flex flex-wrap gap-1.5 sm:gap-2 pb-1">
         {initiativeCat && (
           <button
@@ -207,22 +223,6 @@ export function MapChipBar({
             disabledCategories={disabledCategories}
             onToggleCategory={onToggleCategory}
           />
-        ))}
-      </div>
-
-      {/* Scenario pill toggle (bottom) */}
-      <div className="flex flex-wrap justify-start gap-1.5">
-        {scenarios.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onScenarioChange(s.id)}
-            className={`
-              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 whitespace-nowrap shrink-0
-              glass-chip ${activeScenario === s.id ? "glass-chip-active font-medium text-foreground" : "font-medium text-foreground/70"}
-            `}
-          >
-            {s.label}
-          </button>
         ))}
       </div>
     </div>
