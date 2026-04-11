@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuthStore } from "@/lib/authStore";
 
 export interface SubscriptionWithMarker {
@@ -15,29 +14,23 @@ export interface SubscriptionWithMarker {
   } | null;
 }
 
-async function fetchSubscriptions(userId: string): Promise<SubscriptionWithMarker[]> {
-  const { data, error } = await supabase
-    .from("subscriptions")
-    .select("user_id, event_id, markers(*)")
-    .eq("user_id", userId);
-  if (error) throw error;
-  return (data ?? []) as unknown as SubscriptionWithMarker[];
+const SUBS_STORAGE_KEY = "user_subscriptions";
+
+function getStoredSubs(userId: string): number[] {
+  try {
+    const raw = localStorage.getItem(`${SUBS_STORAGE_KEY}_${userId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
 }
 
-async function addSubscription(userId: string, eventId: number) {
-  const { error } = await supabase
-    .from("subscriptions")
-    .insert({ user_id: userId, event_id: eventId });
-  if (error) throw error;
+function setStoredSubs(userId: string, eventIds: number[]) {
+  localStorage.setItem(`${SUBS_STORAGE_KEY}_${userId}`, JSON.stringify(eventIds));
 }
 
-async function removeSubscription(userId: string, eventId: number) {
-  const { error } = await supabase
-    .from("subscriptions")
-    .delete()
-    .eq("user_id", userId)
-    .eq("event_id", eventId);
-  if (error) throw error;
+async function fetchSubscriptions(userId: string): Promise<number[]> {
+  return getStoredSubs(userId);
 }
 
 export function useSubscriptions() {
@@ -54,7 +47,7 @@ export function useSubscriptions() {
 
 export function useSubscribedEventIds(): Set<number> {
   const { data: subs } = useSubscriptions();
-  return new Set((subs ?? []).map((s) => s.event_id));
+  return new Set(subs ?? []);
 }
 
 export function useToggleSubscription() {
@@ -71,10 +64,13 @@ export function useToggleSubscription() {
       isCurrentlySubscribed: boolean;
     }) => {
       if (!userId) throw new Error("Nicht eingeloggt");
+      const current = getStoredSubs(userId);
       if (isCurrentlySubscribed) {
-        await removeSubscription(userId, eventId);
+        setStoredSubs(userId, current.filter((id) => id !== eventId));
       } else {
-        await addSubscription(userId, eventId);
+        if (!current.includes(eventId)) {
+          setStoredSubs(userId, [...current, eventId]);
+        }
       }
     },
     onSuccess: () => {
