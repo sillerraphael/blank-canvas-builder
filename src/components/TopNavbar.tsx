@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X, MapPin } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +34,7 @@ interface TopNavbarProps {
 export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, hasCompletedOnboarding, user, logout, setAuthenticatedUser } = useAuthStore();
+  const { isLoggedIn, hasCompletedOnboarding, user, bayernUser, logout, setAuthenticatedUser, updateLocation } = useAuthStore();
 
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -47,6 +47,8 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [locationInput, setLocationInput] = useState("");
+  const [isGeocodingLocation, setIsGeocodingLocation] = useState(false);
 
   const showLoggedInUI = isLoggedIn && hasCompletedOnboarding;
 
