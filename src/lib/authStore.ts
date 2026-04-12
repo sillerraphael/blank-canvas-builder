@@ -29,6 +29,20 @@ export interface AuthState {
 }
 
 const STORAGE_KEY = "bayern_id_user";
+const PRIORITIES_KEY = "user_priorities";
+
+function getStoredPriorities(): Record<string, PriorityLevel> {
+  try {
+    const raw = localStorage.getItem(PRIORITIES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function persistPriorities(priorities: Record<string, PriorityLevel>) {
+  localStorage.setItem(PRIORITIES_KEY, JSON.stringify(priorities));
+}
 
 export const DEFAULT_LOCATION = {
   lat: 48.14305255731116,
