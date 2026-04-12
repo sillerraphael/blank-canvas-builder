@@ -88,7 +88,7 @@ export default function CommunityInitiatives() {
 
         {!isLoading && !error && (
           <div className="space-y-3">
-            {(initiatives ?? []).map((init, i) => {
+            {[...(initiatives ?? [])].sort((a, b) => (b.upvotes + b.downvotes) - (a.upvotes + a.downvotes)).map((init, i) => {
               const id = String(init.id);
               const userVote = votes[id] ?? null;
               const displayUpvotes = Math.max(0, init.upvotes);
