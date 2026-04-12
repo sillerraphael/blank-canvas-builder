@@ -26,7 +26,7 @@ interface ChatPanelProps {
 const WELCOME_MSG: Message = {
   id: 1,
   role: "assistant",
-  content: "Hallo! Ich bin dein Agorum Assistent. Frag mich gerne nach geplanten Projekten in deiner Umgebung.",
+  content: "Hallo! Ich bin dein Agorix Assistent. Frag mich gerne nach geplanten Projekten in deiner Umgebung.",
   time: "10:24",
 };
 
