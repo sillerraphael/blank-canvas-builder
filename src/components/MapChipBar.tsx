@@ -166,7 +166,7 @@ function DropdownGroup({
                   <div
                     className={`
                       w-8 h-[18px] rounded-full relative transition-colors duration-200
-                      ${enabled ? "bg-[hsl(213,90%,52%)]" : "bg-foreground/15"}
+                      ${enabled ? "bg-[hsl(220,70%,50%)]" : "bg-foreground/15"}
                     `}
                   >
                     <div
