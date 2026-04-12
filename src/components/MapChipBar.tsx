@@ -114,13 +114,13 @@ function DropdownGroup({
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
       >
-        <LucideIcon name={group.icon} className="w-4 h-4 text-foreground" />
-        <span className="text-foreground">{group.label}</span>
-        <span className={`text-[10px] font-normal px-1.5 py-0.5 rounded-full ${someEnabled ? "text-foreground bg-foreground/8" : "text-foreground bg-foreground/5"}`}>
+        <LucideIcon name={group.icon} className="w-4 h-4" />
+        <span>{group.label}</span>
+        <span className={`text-[10px] font-normal px-1.5 py-0.5 rounded-full ${someEnabled ? "bg-white/20" : "bg-foreground/5"}`}>
           {enabledCount}/{matchedCats.length}
         </span>
         <ChevronDown
-          className={`w-3.5 h-3.5 text-foreground/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 opacity-50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -166,7 +166,7 @@ function DropdownGroup({
                   <div
                     className={`
                       w-8 h-[18px] rounded-full relative transition-colors duration-200
-                      ${enabled ? "bg-primary" : "bg-foreground/15"}
+                      ${enabled ? "bg-foreground" : "bg-foreground/15"}
                     `}
                   >
                     <div
@@ -209,7 +209,7 @@ export function MapChipBar({
             onClick={() => onScenarioChange(s.id)}
             className={`
               text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-full whitespace-pre-line shrink-0
-              glass-chip ${activeScenario === s.id ? "glass-chip-active text-foreground" : "text-foreground/60"}
+              glass-chip ${activeScenario === s.id ? "glass-chip-active" : ""}
             `}
           >
             {s.label}
@@ -228,8 +228,8 @@ export function MapChipBar({
               glass-chip ${initiativeEnabled ? "glass-chip-active" : ""}
             `}
           >
-            <LucideIcon name={initiativeCat.icon} className="w-4 h-4 text-foreground" />
-            <span className="text-foreground">{initiativeCat.label}</span>
+            <LucideIcon name={initiativeCat.icon} className="w-4 h-4" />
+            <span>{initiativeCat.label}</span>
           </button>
         )}
 
