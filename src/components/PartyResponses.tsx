@@ -31,21 +31,24 @@ function PartyCard({ response }: { response: PartyResponse }) {
         <PartyBadge color={party.color} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-bold text-foreground mb-0.5">
-          {party.shortName}
-        </p>
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="text-xs font-bold text-foreground">
+            {party.shortName}
+          </span>
+          <span className="text-muted-foreground/50">–</span>
+          <a
+            href={party.contactUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors"
+          >
+            Sprechstunde vereinbaren
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
         <p className="text-[11px] leading-relaxed text-muted-foreground">
           {response.statement}
         </p>
-        <a
-          href={party.contactUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold text-primary hover:text-primary/80 transition-colors"
-        >
-          Sprechstunde vereinbaren
-          <ExternalLink className="w-3 h-3" />
-        </a>
       </div>
     </div>
   );
