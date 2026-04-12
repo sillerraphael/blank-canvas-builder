@@ -135,7 +135,9 @@ export function ChatPanel({
         const cat = findCat(action.replace("disable:", "").trim(), allCats);
         if (cat) onDisableCategory(cat.id);
       } else if (action.startsWith("scenario:")) {
-        const id = action.replace("scenario:", "").trim();
+        let id = action.replace("scenario:", "").trim();
+        // Support aliases from webhook
+        if (id === "reality") id = "realitaet";
         const valid = scenarios.find((s) => s.id === id);
         if (valid) onScenarioChange(valid.id);
       }
