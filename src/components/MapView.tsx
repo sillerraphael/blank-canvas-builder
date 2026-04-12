@@ -723,44 +723,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
       return { shadowLine, polyline };
     };
 
-    // Add midpoint markers for lines into the cluster group (visible at low zoom)
-    visibleLines.forEach((line) => {
-      const pts = line.path && line.path.length >= 2 ? line.path : line.waypoints;
-      if (!pts || pts.length < 2) return;
-      // Calculate midpoint
-      const midIdx = Math.floor(pts.length / 2);
-      const midLat = pts[midIdx][0];
-      const midLng = pts[midIdx][1];
-
-      const isOepnv = line.category === "oepnv";
-      const cat = getCategoryMeta(line.category);
-      const color = isOepnv ? getOepnvColor(line) : (cat?.markerBg ?? "#4ade80");
-      const emoji = cat?.emoji ?? "🚲";
-      const displayLabel = isOepnv && line.lineName ? line.lineName : emoji;
-
-      const icon = L.divIcon({
-        className: "",
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-        html: `<div style="
-          width:32px;height:32px;background:${color}18;border:2px solid ${color};
-          border-radius:50%;display:flex;align-items:center;justify-content:center;
-          font-size:${isOepnv ? '10px' : '14px'};font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.12);
-          color:${color};
-        ">${isOepnv ? displayLabel.charAt(0) : emoji}</div>`,
-      });
-
-      const midMarker = L.marker([midLat, midLng], {
-        icon,
-        _categoryId: line.category,
-        _label: line.label,
-        _status: line.status,
-        _description: line.description,
-      } as any);
-      midMarker.bindPopup(buildLinePopup(line), { closeButton: false, maxWidth: 320 });
-      const lineCluster = getOrCreateCluster(line.category);
-      lineCluster.addLayer(midMarker);
-    });
+    // (midpoint markers removed — only start/end icons are shown)
 
     // Add all per-category cluster groups to map (after all markers incl. line midpoints are added)
     categoryClusterMap.forEach((cg) => {
