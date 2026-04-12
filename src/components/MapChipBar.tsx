@@ -20,6 +20,7 @@ function LucideIcon({ name, className }: { name: string; className?: string }) {
 interface CategoryGroup {
   id: string;
   label: string;
+  icon: string;
   categoryIds: string[];
 }
 
