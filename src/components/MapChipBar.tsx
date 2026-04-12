@@ -109,14 +109,14 @@ function DropdownGroup({
         ref={buttonRef}
         onClick={handleToggle}
         className={`
-          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-medium
-          whitespace-nowrap transition-all duration-200
+          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-normal
+          whitespace-nowrap
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
       >
-        <LucideIcon name={group.icon} className={`w-4 h-4 ${someEnabled ? "text-foreground" : "text-foreground/60"}`} />
-        <span className={`text-foreground/90 ${someEnabled ? "text-foreground" : ""}`}>{group.label}</span>
-        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${someEnabled ? "text-primary bg-primary/12" : "text-foreground/50 bg-foreground/8"}`}>
+        <LucideIcon name={group.icon} className={`w-4 h-4 ${someEnabled ? "text-foreground" : "text-foreground/50"}`} />
+        <span className="text-foreground">{group.label}</span>
+        <span className={`text-[10px] font-normal px-1.5 py-0.5 rounded-full ${someEnabled ? "text-foreground bg-foreground/8" : "text-foreground/40 bg-foreground/5"}`}>
           {enabledCount}/{matchedCats.length}
         </span>
         <ChevronDown
@@ -208,8 +208,8 @@ export function MapChipBar({
             key={s.id}
             onClick={() => onScenarioChange(s.id)}
             className={`
-              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-full transition-all duration-200 whitespace-pre-line shrink-0
-              glass-chip ${activeScenario === s.id ? "glass-chip-active font-semibold text-foreground" : "font-medium text-foreground/60"}
+              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-full whitespace-pre-line shrink-0
+              glass-chip ${activeScenario === s.id ? "glass-chip-active text-foreground" : "text-foreground/60"}
             `}
           >
             {s.label}
@@ -223,13 +223,13 @@ export function MapChipBar({
           <button
             onClick={() => onToggleCategory("initiative")}
             className={`
-              flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-medium
-              whitespace-nowrap shrink-0 transition-all duration-200
+              flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-normal
+              whitespace-nowrap shrink-0
               glass-chip ${initiativeEnabled ? "glass-chip-active" : ""}
             `}
           >
             <LucideIcon name={initiativeCat.icon} className={`w-4 h-4 ${initiativeEnabled ? "text-foreground" : "opacity-40"}`} />
-            <span className={initiativeEnabled ? "text-foreground font-semibold" : "text-foreground/60"}>{initiativeCat.label}</span>
+            <span className={initiativeEnabled ? "text-foreground" : "text-foreground/60"}>{initiativeCat.label}</span>
           </button>
         )}
 
