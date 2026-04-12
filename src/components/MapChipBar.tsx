@@ -1,35 +1,52 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, icons } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Helper to render a Lucide icon by kebab-case name
+function LucideIcon({ name, className }: { name: string; className?: string }) {
+  // Convert kebab-case to PascalCase
+  const pascalName = name
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+  const IconComponent = (icons as any)[pascalName];
+  if (!IconComponent) return null;
+  return <IconComponent className={className} />;
+}
 
 // ── Category group definitions ──
 interface CategoryGroup {
   id: string;
   label: string;
+  icon: string;
   categoryIds: string[];
 }
 
 const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     id: "verkehr",
-    label: "🚌 Verkehr",
+    label: "Verkehr",
+    icon: "bus",
     categoryIds: ["oepnv", "radweg", "parkplatz"],
   },
   {
     id: "umwelt",
-    label: "🌳 Umwelt & Grünflächen",
+    label: "Umwelt & Grünflächen",
+    icon: "trees",
     categoryIds: ["park", "spielplatz"],
   },
   {
     id: "bebauung",
-    label: "🏗️ Bebauung",
+    label: "Bebauung",
+    icon: "building-2",
     categoryIds: ["bauprojekt"],
   },
   {
     id: "sonstiges",
-    label: "📌 Sonstiges",
+    label: "Sonstiges",
+    icon: "pin",
     categoryIds: ["kultur", "konflikt"],
   },
 ];
@@ -97,6 +114,7 @@ function DropdownGroup({
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
       >
+        <LucideIcon name={group.icon} className={`w-4 h-4 ${someEnabled ? "text-foreground" : "text-foreground/60"}`} />
         <span className={`text-foreground/90 ${someEnabled ? "text-foreground" : ""}`}>{group.label}</span>
         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${someEnabled ? "text-primary bg-primary/12" : "text-foreground/50 bg-foreground/8"}`}>
           {enabledCount}/{matchedCats.length}
@@ -143,7 +161,7 @@ function DropdownGroup({
                     hover:bg-white/30
                   `}
                 >
-                  <span className={`text-base leading-none ${enabled ? "" : "opacity-50"}`}>{cat.emoji}</span>
+                  <LucideIcon name={cat.icon} className={`w-4 h-4 ${enabled ? "text-foreground" : "opacity-50"}`} />
                   <span className="flex-1 text-left font-medium text-[13px]">{cat.label}</span>
                   <div
                     className={`
@@ -210,7 +228,7 @@ export function MapChipBar({
               glass-chip ${initiativeEnabled ? "glass-chip-active" : ""}
             `}
           >
-            <span className={`text-sm leading-none ${initiativeEnabled ? "" : "opacity-40"}`}>{initiativeCat.emoji}</span>
+            <LucideIcon name={initiativeCat.icon} className={`w-4 h-4 ${initiativeEnabled ? "text-foreground" : "opacity-40"}`} />
             <span className={initiativeEnabled ? "text-foreground font-semibold" : "text-foreground/60"}>{initiativeCat.label}</span>
           </button>
         )}
