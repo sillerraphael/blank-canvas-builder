@@ -715,6 +715,7 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
           ">${isOepnv ? label.charAt(0) : emoji}</div>`,
         });
         const m = L.marker(pos as [number, number], { icon: dot }).addTo(map);
+        m.bindPopup(buildLinePopup(line), { closeButton: false, maxWidth: 320 });
         layersRef.current.push(m);
         lineLayers.push(m);
       });
