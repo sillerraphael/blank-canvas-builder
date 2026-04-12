@@ -5,6 +5,7 @@ import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData"
 import { useMapCategories } from "@/hooks/useMapData";
 import { usePretextLayout } from "@/hooks/usePretextLayout";
 import { useAuthStore } from "@/lib/authStore";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
   id: number;
