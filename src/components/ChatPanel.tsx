@@ -240,7 +240,7 @@ export function ChatPanel({
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={() => setIsMinimized(false)}
-        className={`fixed z-20 w-12 h-12 rounded-full flex items-center justify-center ${isMobile ? "bottom-4 right-4" : "top-[130px] right-6"}`}
+        className={`fixed z-20 w-12 h-12 rounded-full flex items-center justify-center ${isMobile ? "bottom-4 right-4" : "top-[112px] right-6"}`}
         style={{
           background: "linear-gradient(135deg, #0050d4, #618bff)",
           boxShadow: "0 4px 20px rgba(0,80,212,0.35)",
@@ -272,7 +272,7 @@ export function ChatPanel({
         initial={{ opacity: 0, y: isMobile ? 20 : -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className={`fixed z-20 ${isMobile ? "bottom-3 left-3 right-3" : "top-[130px] right-6"}`}
+        className={`fixed z-20 ${isMobile ? "bottom-3 left-3 right-3" : "top-[112px] right-6"}`}
         style={isMobile ? {} : { width: panelW }}
       >
         <div className="liquid-glass-panel rounded-[1.5rem] p-1.5">
@@ -313,7 +313,7 @@ export function ChatPanel({
       initial={{ opacity: 0, y: isMobile ? 20 : -20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className={`fixed z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden ${isMobile ? "bottom-3 left-3 right-3" : "top-[130px] right-6"}`}
+      className={`fixed z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden ${isMobile ? "bottom-3 left-3 right-3" : "top-[112px] right-6"}`}
       style={isMobile ? { height: Math.min(panelH, window.innerHeight * 0.6) } : { width: panelW, height: panelH }}
     >
       {/* Header */}
