@@ -117,7 +117,7 @@ const MOCK_USER: BayernIDUser = {
 
 export const useAuthStore = create<AuthState>((set) => ({
   ...loadInitialState(),
-  priorities: {},
+  priorities: getStoredPriorities(),
 
   setAuthenticatedUser: (nextUser, options) => {
     if (options?.persist !== false) {
