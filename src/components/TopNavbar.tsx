@@ -377,13 +377,6 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
               </div>
               <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
             </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-foreground">Dunkelmodus</p>
-                <p className="text-xs text-muted-foreground">Dunkles Farbschema verwenden</p>
-              </div>
-              <Switch checked={darkModeEnabled} onCheckedChange={setDarkModeEnabled} />
-            </div>
           </div>
           <div className="flex justify-end pt-2">
             <Button variant="outline" className="rounded-xl" onClick={() => setShowSettingsModal(false)}>
