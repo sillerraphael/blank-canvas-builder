@@ -161,6 +161,20 @@ export function ChatPanel({
       const filters: Record<string, boolean> = {};
       allCats.forEach((c) => { filters[c.id] = !disabledCategories.has(c.id); });
 
+      // Extract user location from localStorage
+      let user_lat: number | null = null;
+      let user_lng: number | null = null;
+      try {
+        const stored = localStorage.getItem("bayernUser");
+        if (stored) {
+          const user = JSON.parse(stored);
+          if (user?.location?.lat != null && user?.location?.lng != null) {
+            user_lat = user.location.lat;
+            user_lng = user.location.lng;
+          }
+        }
+      } catch { /* ignore parse errors */ }
+
       const res = await fetch("https://hook.eu1.make.com/w7v4l1y8819hfzewe1p36xt6m6v691yr", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -171,6 +185,8 @@ export function ChatPanel({
           activeScenarioLabel: scenarios.find((s) => s.id === activeScenario)?.label ?? activeScenario,
           availableScenarios: scenarios.map((s) => ({ id: s.id, label: s.label, description: s.description })),
           filters,
+          user_lat,
+          user_lng,
         }),
       });
       if (res.ok) {
