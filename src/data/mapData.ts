@@ -2,24 +2,25 @@
 export interface MarkerCategory {
   id: string;
   label: string;
-  emoji: string;
-  color: string; // tailwind bg class
-  markerBg: string; // hex for leaflet
+  emoji: string; // kept for map markers
+  icon: string; // lucide icon name
+  color: string;
+  markerBg: string;
   categoryType?: string;
 }
 
 export const pointCategories: MarkerCategory[] = [
-  { id: "initiative", label: "Initiative", emoji: "💡", color: "bg-yellow-300", markerBg: "#fde047" },
-  { id: "konflikt", label: "Konflikt", emoji: "⚠️", color: "bg-red-400", markerBg: "#f87171" },
-  { id: "bauprojekt", label: "Bauprojekte", emoji: "🏗️", color: "bg-orange-400", markerBg: "#fb923c" },
-  { id: "oepnv", label: "ÖPNV", emoji: "🚌", color: "bg-blue-400", markerBg: "#60a5fa" },
+  { id: "initiative", label: "Initiative", emoji: "💡", icon: "lightbulb", color: "bg-yellow-300", markerBg: "#fde047" },
+  { id: "konflikt", label: "Konflikt", emoji: "⚠️", icon: "alert-triangle", color: "bg-red-400", markerBg: "#f87171" },
+  { id: "bauprojekt", label: "Bauprojekte", emoji: "🏗️", icon: "building-2", color: "bg-orange-400", markerBg: "#fb923c" },
+  { id: "oepnv", label: "ÖPNV", emoji: "🚌", icon: "bus", color: "bg-blue-400", markerBg: "#60a5fa" },
 ];
 
 export const streetCategories: MarkerCategory[] = [
-  { id: "radweg", label: "Radweg", emoji: "🚲", color: "bg-green-400", markerBg: "#4ade80" },
-  { id: "parkplatz", label: "Parkplatz", emoji: "🅿️", color: "bg-slate-400", markerBg: "#94a3b8" },
-  { id: "park", label: "Neuer Park", emoji: "🌳", color: "bg-emerald-500", markerBg: "#10b981" },
-  { id: "spielplatz", label: "Kinderspielplatz", emoji: "🎠", color: "bg-pink-400", markerBg: "#f472b6" },
+  { id: "radweg", label: "Radweg", emoji: "🚲", icon: "bike", color: "bg-green-400", markerBg: "#4ade80" },
+  { id: "parkplatz", label: "Parkplatz", emoji: "🅿️", icon: "square-parking", color: "bg-slate-400", markerBg: "#94a3b8" },
+  { id: "park", label: "Neuer Park", emoji: "🌳", icon: "trees", color: "bg-emerald-500", markerBg: "#10b981" },
+  { id: "spielplatz", label: "Kinderspielplatz", emoji: "🎠", icon: "baby", color: "bg-pink-400", markerBg: "#f472b6" },
 ];
 
 export const allCategories = [...pointCategories, ...streetCategories];
