@@ -367,9 +367,16 @@ export function getPartyResponses(
   category: string,
 ): PartyResponse[] {
   const theme = getTheme(category);
-  const seed = hashCode(String(initiativeId));
+  const seed = Math.abs(hashCode(String(initiativeId)));
 
-  return parties.map((party) => {
+  // Pick 2–3 parties deterministically per initiative
+  const count = (seed % 2) + 2; // 2 or 3
+  const shuffled = [...parties].sort(
+    (a, b) => hashCode(a.id + initiativeId) - hashCode(b.id + initiativeId),
+  );
+  const selected = shuffled.slice(0, count);
+
+  return selected.map((party) => {
     const pool =
       responsePool[party.id]?.[theme] ?? responsePool[party.id]?.default ?? [];
     const fallback =
@@ -377,7 +384,7 @@ export function getPartyResponses(
       "Wir nehmen diese Initiative zur Kenntnis und werden sie intern beraten.";
 
     const text =
-      pool.length > 0 ? pool[Math.abs(seed) % pool.length] : fallback;
+      pool.length > 0 ? pool[seed % pool.length] : fallback;
 
     return { partyId: party.id, statement: text };
   });
