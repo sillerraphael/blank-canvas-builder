@@ -870,10 +870,10 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         />
       )}
 
-      {/* Subtle backdrop strip for contrast stability */}
-      <div className="absolute top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip" />
+      {/* Subtle backdrop strip for contrast stability — hidden on mobile */}
+      <div className="absolute top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip hidden md:block" />
 
-      <div className="absolute top-[84px] left-3 sm:left-4 right-3 sm:right-4 z-30 pointer-events-none">
+      <div className="absolute top-[84px] left-3 sm:left-4 right-3 sm:right-4 z-30 pointer-events-none hidden md:block">
         <MapChipBar
           activeScenario={activeScenario}
           onScenarioChange={onScenarioChange}

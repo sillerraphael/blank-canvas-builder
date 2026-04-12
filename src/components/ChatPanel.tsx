@@ -5,6 +5,7 @@ import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData"
 import { useMapCategories } from "@/hooks/useMapData";
 import { usePretextLayout } from "@/hooks/usePretextLayout";
 import { useAuthStore } from "@/lib/authStore";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
   id: number;
@@ -60,6 +61,7 @@ export function ChatPanel({
   onScenarioChange,
   onFlyTo,
 }: ChatPanelProps) {
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState<Message[]>([WELCOME_MSG]);
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -238,7 +240,7 @@ export function ChatPanel({
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={() => setIsMinimized(false)}
-        className="fixed top-20 right-6 z-20 w-12 h-12 rounded-full flex items-center justify-center"
+        className={`fixed z-20 w-12 h-12 rounded-full flex items-center justify-center ${isMobile ? "bottom-4 right-4" : "top-20 right-6"}`}
         style={{
           background: "linear-gradient(135deg, #0050d4, #618bff)",
           boxShadow: "0 4px 20px rgba(0,80,212,0.35)",
@@ -267,11 +269,11 @@ export function ChatPanel({
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: isMobile ? 20 : -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="fixed top-20 right-6 z-20"
-        style={{ width: panelW }}
+        className={`fixed z-20 ${isMobile ? "bottom-3 left-3 right-3" : "top-20 right-6"}`}
+        style={isMobile ? {} : { width: panelW }}
       >
         <div className="liquid-glass-panel rounded-[1.5rem] p-1.5">
           <div className="flex items-center gap-2 px-4 py-2.5">
@@ -308,11 +310,11 @@ export function ChatPanel({
   // ── Expanded panel ─────────────────────────────────────
   return (
     <motion.section
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+      initial={{ opacity: 0, y: isMobile ? 20 : -20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="fixed top-20 right-6 z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden"
-      style={{ width: panelW, height: panelH }}
+      className={`fixed z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden ${isMobile ? "bottom-3 left-3 right-3" : "top-20 right-6"}`}
+      style={isMobile ? { height: Math.min(panelH, window.innerHeight * 0.6) } : { width: panelW, height: panelH }}
     >
       {/* Header */}
       <div className="px-5 py-3.5 flex items-center gap-3 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
