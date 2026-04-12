@@ -240,7 +240,7 @@ export function ChatPanel({
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={() => setIsMinimized(false)}
-        className="fixed top-20 right-6 z-20 w-12 h-12 rounded-full flex items-center justify-center"
+        className={`fixed z-20 w-12 h-12 rounded-full flex items-center justify-center ${isMobile ? "bottom-4 right-4" : "top-20 right-6"}`}
         style={{
           background: "linear-gradient(135deg, #0050d4, #618bff)",
           boxShadow: "0 4px 20px rgba(0,80,212,0.35)",
