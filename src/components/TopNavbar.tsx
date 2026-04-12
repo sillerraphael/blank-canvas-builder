@@ -261,7 +261,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
             <div className="w-full space-y-2 mt-2">
               <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
                 <MapPin className="w-4 h-4 text-primary" />
-                Mein Standort
+                Mein Wohnsitz
               </label>
               <p className="text-xs text-muted-foreground">
                 {bayernUser?.location
