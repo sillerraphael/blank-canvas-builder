@@ -225,7 +225,7 @@ export function ChatPanel({
     const parts = content.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, i) => {
       if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={i} className="font-semibold" style={{ color: "#7b9cff" }}>{part.slice(2, -2)}</strong>;
+        return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
       }
       return <span key={i}>{part}</span>;
     });
@@ -242,8 +242,8 @@ export function ChatPanel({
         onClick={() => setIsMinimized(false)}
         className={`fixed z-20 w-12 h-12 rounded-full flex items-center justify-center ${isMobile ? "bottom-4 right-4" : "top-[112px] right-6"}`}
         style={{
-          background: "linear-gradient(135deg, #0050d4, #618bff)",
-          boxShadow: "0 4px 20px rgba(0,80,212,0.35)",
+          background: "linear-gradient(135deg, #1a1a1a, #3a3a3a)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
         }}
       >
         <MessageCircle className="w-5 h-5 text-white" />
@@ -277,8 +277,8 @@ export function ChatPanel({
       >
         <div className="liquid-glass-panel rounded-[1.5rem] p-1.5">
           <div className="flex items-center gap-2 px-4 py-2.5">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(123,156,255,0.15)" }}>
-              <Sparkles className="w-4 h-4" style={{ color: "#7b9cff" }} />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(0,0,0,0.08)" }}>
+              <Sparkles className="w-4 h-4 text-foreground/70" />
             </div>
             <textarea
               ref={compactInputRef}
@@ -295,8 +295,8 @@ export function ChatPanel({
               onClick={sendMessage}
               className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, #0050d4, #618bff)",
-                boxShadow: "0 4px 12px rgba(0,80,212,0.3)",
+                background: "linear-gradient(135deg, #1a1a1a, #3a3a3a)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
               }}
             >
               <Send className="w-4 h-4 text-white" />
@@ -318,8 +318,8 @@ export function ChatPanel({
     >
       {/* Header */}
       <div className="px-5 py-3.5 flex items-center gap-3 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(123,156,255,0.15)", backdropFilter: "blur(10px)" }}>
-          <Sparkles className="w-4.5 h-4.5" style={{ color: "#7b9cff" }} />
+        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(0,0,0,0.08)", backdropFilter: "blur(10px)" }}>
+          <Sparkles className="w-4.5 h-4.5 text-foreground/70" />
         </div>
         <div className="flex-1 min-w-0">
           <h2 className="text-sm font-bold" style={{ color: "#2c2f31" }}>Agorix AI Chatbot</h2>
@@ -353,9 +353,9 @@ export function ChatPanel({
                   className="px-4 py-3 text-[14px] leading-relaxed rounded-[1.25rem]"
                   style={msg.role === "user"
                     ? {
-                        background: "linear-gradient(135deg, rgba(123,156,255,0.5), rgba(97,139,255,0.4))",
+                        background: "linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.08))",
                         backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(123,156,255,0.3)",
+                        border: "1px solid rgba(0,0,0,0.1)",
                         color: "#1a1a2e",
                         borderBottomRightRadius: "0.375rem",
                       }
@@ -401,8 +401,8 @@ export function ChatPanel({
             onClick={sendMessage}
             className="h-9 px-4 rounded-full flex items-center justify-center gap-1.5 text-white text-xs font-semibold shrink-0"
             style={{
-              background: "linear-gradient(135deg, #0050d4, #618bff)",
-              boxShadow: "0 4px 12px rgba(0,80,212,0.3)",
+              background: "linear-gradient(135deg, #1a1a1a, #3a3a3a)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
             }}
           >
             Search <Send className="w-3.5 h-3.5" />
