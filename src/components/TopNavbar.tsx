@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X, MapPin } from "lucide-react";
+import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X, MapPin, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,6 +36,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
   const location = useLocation();
   const { isLoggedIn, hasCompletedOnboarding, user, bayernUser, logout, setAuthenticatedUser, updateLocation } = useAuthStore();
 
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showInitiativesModal, setShowInitiativesModal] = useState(false);
@@ -152,9 +153,9 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[55] flex justify-between items-center px-8 h-[72px] glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20">
-        <div className="flex items-center gap-8">
-          <span className="text-xl font-semibold bg-gradient-to-br from-primary to-[hsl(var(--primary-container))] bg-clip-text text-transparent tracking-tight">
+      <header className="fixed top-0 left-0 right-0 z-[55] flex justify-between items-center px-4 md:px-8 h-[56px] md:h-[72px] glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20">
+        <div className="flex items-center gap-4 md:gap-8">
+          <span className="text-lg md:text-xl font-semibold bg-gradient-to-br from-primary to-[hsl(var(--primary-container))] bg-clip-text text-transparent tracking-tight">
             Agorix
           </span>
           <nav className="hidden md:flex items-center gap-6">
@@ -179,11 +180,11 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 rounded-xl"
+            className="gap-1.5 rounded-xl hidden md:flex"
             onClick={() => {
               if (onNewInitiative) {
                 onNewInitiative();
@@ -193,20 +194,13 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
             }}
           >
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Neue Initiative</span>
+            <span>Neue Initiative</span>
           </Button>
-
-          <button className="p-2 text-muted-foreground hover:bg-background/40 rounded-full transition-all hidden">
-            <Bell className="w-5 h-5" strokeWidth={1.5} />
-          </button>
-          <button className="p-2 text-muted-foreground hover:bg-background/40 rounded-full transition-all hidden">
-            <Settings className="w-5 h-5" strokeWidth={1.5} />
-          </button>
 
           {showLoggedInUI ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold hover:opacity-90 transition-opacity">
+                <button className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold hover:opacity-90 transition-opacity">
                   {user?.initials ?? "U"}
                 </button>
               </DropdownMenuTrigger>
@@ -240,8 +234,58 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
               Login
             </Button>
           )}
+
+          {/* Hamburger menu — mobile only */}
+          <button
+            className="md:hidden p-2 text-foreground/70 hover:text-foreground rounded-xl hover:bg-foreground/5 transition-all"
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+          >
+            {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </header>
+
+      {/* Mobile navigation dropdown */}
+      {showMobileMenu && (
+        <div className="fixed top-[56px] left-0 right-0 z-[54] md:hidden glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20 animate-in fade-in slide-in-from-top-1 duration-200">
+          <nav className="flex flex-col px-4 py-2">
+            {navLinks.map((link) => {
+              const isActive = link.path === "/"
+                ? link.label === "Karte" && location.pathname === "/"
+                : location.pathname === link.path;
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => {
+                    navigate(link.path);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`text-sm py-2.5 text-left transition-all ${
+                    isActive
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => {
+                setShowMobileMenu(false);
+                if (onNewInitiative) {
+                  onNewInitiative();
+                } else {
+                  navigate("/initiativen");
+                }
+              }}
+              className="text-sm py-2.5 text-left text-muted-foreground flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" /> Neue Initiative
+            </button>
+          </nav>
+        </div>
+      )}
 
       {/* ── Mein Profil Modal ─────────────────────────────────── */}
       <Dialog open={showProfileModal} onOpenChange={setShowProfileModal}>

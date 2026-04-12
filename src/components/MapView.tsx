@@ -870,9 +870,10 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         />
       )}
 
-      {/* Subtle backdrop strip for contrast stability — hidden on mobile */}
-      <div className="absolute top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip hidden md:block" />
+      {/* Subtle backdrop strip for contrast stability */}
+      <div className="absolute top-[56px] md:top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip hidden md:block" />
 
+      {/* Desktop filters */}
       <div className="absolute top-[84px] left-3 sm:left-4 right-3 sm:right-4 z-30 pointer-events-none hidden md:block">
         <MapChipBar
           activeScenario={activeScenario}
@@ -883,6 +884,15 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
           streetCategories={_categories.filter(c => ["radweg","parkplatz","park","spielplatz"].includes(c.id))}
         />
       </div>
+
+      {/* Mobile collapsible filters */}
+      <MobileFilterBar
+        activeScenario={activeScenario}
+        onScenarioChange={onScenarioChange}
+        disabledCategories={disabledCategories}
+        onToggleCategory={onToggleCategory}
+        categories={_categories}
+      />
 
       {/* Custom zoom controls */}
       <div className="absolute bottom-4 left-4 z-30 flex flex-col gap-1">
