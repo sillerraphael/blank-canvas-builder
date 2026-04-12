@@ -27,6 +27,7 @@ function toMarkerCategory(c: CategoryResponse): MarkerCategory {
     id: String(c.id),
     label: c.label,
     emoji: c.emoji ?? "📍",
+    icon: (c as any).icon ?? "map-pin",
     color: c.color ?? "bg-gray-400",
     markerBg: c.marker_bg ?? "#94a3b8",
   };
