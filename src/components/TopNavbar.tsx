@@ -183,7 +183,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 rounded-xl hidden md:flex"
+            className="gap-1.5 rounded-xl hidden md:flex backdrop-blur-md bg-white/20 border-white/30 text-foreground hover:bg-white/35 hover:border-white/50 shadow-sm"
             onClick={() => {
               if (onNewInitiative) {
                 onNewInitiative();
@@ -227,7 +227,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
           ) : (
             <Button
               size="sm"
-              className="rounded-xl gap-2"
+              className="rounded-xl gap-2 backdrop-blur-md bg-foreground/80 text-background hover:bg-foreground/90 shadow-sm border-0"
               onClick={() => setShowLoginDialog(true)}
             >
               Login
