@@ -8,6 +8,7 @@ import { useInitiatives, useVoteInitiative } from "@/hooks/useInitiatives";
 import { useCategories } from "@/hooks/useCategories";
 import { useNavigate } from "react-router-dom";
 import { getLocalVotes, type VoteType } from "@/lib/initiativesApi";
+import PartyResponses from "@/components/PartyResponses";
 
 export default function CommunityInitiatives() {
   const { categories: categoryOptions, categoryColors } = useCategories();
@@ -167,6 +168,11 @@ export default function CommunityInitiatives() {
                           Änderungsvorschlag
                         </button>
                       </div>
+
+                      <PartyResponses
+                        initiativeId={init.id}
+                        category={init.category}
+                      />
                     </div>
                   </div>
                 </motion.div>
