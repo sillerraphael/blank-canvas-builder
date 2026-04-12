@@ -190,7 +190,7 @@ export function MapChipBar({
             key={s.id}
             onClick={() => onScenarioChange(s.id)}
             className={`
-              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 whitespace-nowrap shrink-0
+              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 whitespace-pre-line shrink-0
               glass-chip ${activeScenario === s.id ? "glass-chip-active font-medium text-foreground" : "font-medium text-foreground/70"}
             `}
           >
