@@ -29,6 +29,20 @@ export interface AuthState {
 }
 
 const STORAGE_KEY = "bayern_id_user";
+const PRIORITIES_KEY = "user_priorities";
+
+function getStoredPriorities(): Record<string, PriorityLevel> {
+  try {
+    const raw = localStorage.getItem(PRIORITIES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function persistPriorities(priorities: Record<string, PriorityLevel>) {
+  localStorage.setItem(PRIORITIES_KEY, JSON.stringify(priorities));
+}
 
 export const DEFAULT_LOCATION = {
   lat: 48.14305255731116,
@@ -103,7 +117,7 @@ const MOCK_USER: BayernIDUser = {
 
 export const useAuthStore = create<AuthState>((set) => ({
   ...loadInitialState(),
-  priorities: {},
+  priorities: getStoredPriorities(),
 
   setAuthenticatedUser: (nextUser, options) => {
     if (options?.persist !== false) {
@@ -138,7 +152,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem(`onboarding_completed_${stored.id}`);
     }
 
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(PRIORITIES_KEY);
     set({
       isLoggedIn: false,
       user: null,
@@ -150,9 +164,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   setPriority: (topicId, level) =>
-    set((state) => ({
-      priorities: { ...state.priorities, [topicId]: level },
-    })),
+    set((state) => {
+      const priorities = { ...state.priorities, [topicId]: level };
+      persistPriorities(priorities);
+      return { priorities };
+    }),
 
   completeOnboarding: () => {
     const bayernUser = useAuthStore.getState().bayernUser;
