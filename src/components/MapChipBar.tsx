@@ -165,11 +165,8 @@ function DropdownGroup({
                   <span className="flex-1 text-left font-medium text-[13px]">{cat.label}</span>
                   <div
                     className={`
-                      w-8 h-[18px] rounded-full relative transition-all duration-200
-                      ${enabled
-                        ? "bg-gradient-to-r from-[hsla(220,70%,50%,0.7)] to-[hsla(215,80%,58%,0.6)] shadow-[0_1px_6px_rgba(30,64,175,0.2),inset_0_1px_0_rgba(255,255,255,0.25)]"
-                        : "bg-foreground/15"
-                      }
+                      w-8 h-[18px] rounded-full relative transition-colors duration-200
+                      ${enabled ? "bg-[hsl(220,70%,50%)]" : "bg-foreground/15"}
                     `}
                   >
                     <div
