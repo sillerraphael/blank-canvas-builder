@@ -152,7 +152,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem(`onboarding_completed_${stored.id}`);
     }
 
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(PRIORITIES_KEY);
     set({
       isLoggedIn: false,
       user: null,
@@ -164,9 +164,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   setPriority: (topicId, level) =>
-    set((state) => ({
-      priorities: { ...state.priorities, [topicId]: level },
-    })),
+    set((state) => {
+      const priorities = { ...state.priorities, [topicId]: level };
+      persistPriorities(priorities);
+      return { priorities };
+    }),
 
   completeOnboarding: () => {
     const bayernUser = useAuthStore.getState().bayernUser;
