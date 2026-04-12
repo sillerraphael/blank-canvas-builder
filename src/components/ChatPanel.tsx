@@ -269,7 +269,7 @@ export function ChatPanel({
               value={input}
               onChange={handleCompactInput}
               onKeyDown={handleKeyDown}
-              placeholder="Frag den Agorum Assistenten..."
+              placeholder="Frag den Agorix Assistenten..."
               rows={1}
               className="flex-1 bg-transparent text-sm outline-none resize-none overflow-hidden leading-snug"
               style={{ color: "#2c2f31", fontFamily: "Inter, sans-serif", maxHeight: "120px" }}
@@ -306,7 +306,7 @@ export function ChatPanel({
           <Sparkles className="w-4.5 h-4.5" style={{ color: "#7b9cff" }} />
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-sm font-bold" style={{ color: "#2c2f31" }}>Agorum AI Chatbot</h2>
+          <h2 className="text-sm font-bold" style={{ color: "#2c2f31" }}>Agorix AI Chatbot</h2>
           <p className="text-[10px] font-medium" style={{ color: "#00c896" }}>Active now</p>
         </div>
         <button
