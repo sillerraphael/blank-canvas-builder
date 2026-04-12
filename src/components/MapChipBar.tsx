@@ -114,6 +114,7 @@ function DropdownGroup({
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
       >
+        <LucideIcon name={group.icon} className={`w-4 h-4 ${someEnabled ? "text-foreground" : "text-foreground/60"}`} />
         <span className={`text-foreground/90 ${someEnabled ? "text-foreground" : ""}`}>{group.label}</span>
         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${someEnabled ? "text-primary bg-primary/12" : "text-foreground/50 bg-foreground/8"}`}>
           {enabledCount}/{matchedCats.length}
