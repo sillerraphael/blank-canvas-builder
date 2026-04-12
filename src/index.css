@@ -164,63 +164,53 @@
   .glass-chip {
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.38) 0%,
-      rgba(255, 255, 255, 0.20) 50%,
-      rgba(255, 255, 255, 0.28) 100%
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.25) 100%
     );
-    backdrop-filter: blur(60px) saturate(200%);
-    -webkit-backdrop-filter: blur(60px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     box-shadow:
-      0 8px 40px rgba(0, 0, 0, 0.08),
-      0 2px 8px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.55),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.1);
-    color: hsl(213 20% 20%);
+      0 2px 12px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: hsl(0 0% 15%);
     transition: all 0.2s ease;
   }
   .glass-chip:hover {
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.48) 0%,
-      rgba(255, 255, 255, 0.28) 50%,
+      rgba(255, 255, 255, 0.55) 0%,
       rgba(255, 255, 255, 0.35) 100%
     );
-    border-color: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.6);
     box-shadow:
-      0 8px 40px rgba(0, 0, 0, 0.10),
-      0 2px 8px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
   }
   .glass-chip-active {
     background: linear-gradient(
       180deg,
-      rgba(0, 122, 255, 0.18) 0%,
-      rgba(0, 122, 255, 0.10) 50%,
-      rgba(0, 122, 255, 0.14) 100%
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.04) 100%
     );
-    backdrop-filter: blur(60px) saturate(220%);
-    -webkit-backdrop-filter: blur(60px) saturate(220%);
-    border: 1px solid rgba(0, 122, 255, 0.25);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow:
-      0 4px 24px rgba(0, 122, 255, 0.10),
-      0 1px 4px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -1px 0 rgba(0, 122, 255, 0.06);
+      0 2px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    color: hsl(0 0% 5%);
   }
   .glass-chip-active:hover {
     background: linear-gradient(
       180deg,
-      rgba(0, 122, 255, 0.24) 0%,
-      rgba(0, 122, 255, 0.14) 50%,
-      rgba(0, 122, 255, 0.18) 100%
+      rgba(0, 0, 0, 0.12) 0%,
+      rgba(0, 0, 0, 0.06) 100%
     );
-    border-color: rgba(0, 122, 255, 0.32);
+    border-color: rgba(0, 0, 0, 0.2);
     box-shadow:
-      0 4px 28px rgba(0, 122, 255, 0.14),
-      0 1px 4px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.35),
-      inset 0 -1px 0 rgba(0, 122, 255, 0.08);
+      0 4px 16px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   /* Backdrop strip behind chip row for stable contrast */
