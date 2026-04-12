@@ -886,7 +886,8 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
 
     if (boundsLayers.length > 0 && !initialFitDoneRef.current) {
       const group = L.featureGroup(boundsLayers);
-      map.fitBounds(group.getBounds().pad(0.3), { maxZoom: 16 });
+      map.fitBounds(group.getBounds().pad(0.1), { maxZoom: 15 });
+      if (map.getZoom() < 14) map.setZoom(14);
       initialFitDoneRef.current = true;
     }
 
