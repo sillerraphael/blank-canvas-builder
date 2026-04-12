@@ -92,7 +92,7 @@ function DropdownGroup({
         ref={buttonRef}
         onClick={handleToggle}
         className={`
-          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-[12px] sm:text-[13px] font-medium
+          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-medium
           whitespace-nowrap transition-all duration-200
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
