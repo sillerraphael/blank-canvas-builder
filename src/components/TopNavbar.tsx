@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import agorixLogo from "@/assets/agorix_logo.svg";
 import { Bell, Settings, Plus, LogOut, User, Lightbulb, Loader2, Mail, Lock, X, MapPin, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DEFAULT_LOCATION, useAuthStore } from "@/lib/authStore";
@@ -155,9 +156,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
     <>
       <header className="fixed top-0 left-0 right-0 z-[55] flex justify-between items-center px-4 md:px-8 h-[56px] md:h-[72px] glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20">
         <div className="flex items-center gap-4 md:gap-8">
-          <span className="text-lg md:text-xl font-semibold bg-gradient-to-br from-primary to-[hsl(var(--primary-container))] bg-clip-text text-transparent tracking-tight">
-            Agorix
-          </span>
+          <img src={agorixLogo} alt="Agorix" className="h-7 md:h-9 w-auto" />
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = link.path === "/"
