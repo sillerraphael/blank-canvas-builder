@@ -183,7 +183,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 rounded-xl hidden md:flex backdrop-blur-md bg-white/30 border-white/40 text-foreground hover:bg-white/50 hover:border-white/60 shadow-sm"
+            className="gap-1.5 rounded-xl hidden md:flex backdrop-blur-md bg-white/30 border-white/40 text-foreground hover:bg-white/50 hover:border-white/60 hover:text-foreground shadow-sm"
             onClick={() => {
               if (onNewInitiative) {
                 onNewInitiative();
