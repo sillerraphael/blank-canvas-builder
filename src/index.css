@@ -160,57 +160,39 @@
       inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  /* Neutral frosted glass — premium floating chips */
+  /* Neutral frosted glass — liquid floating chips */
   .glass-chip {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.45) 0%,
-      rgba(255, 255, 255, 0.25) 100%
-    );
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    color: hsl(0 0% 15%);
-    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    color: hsl(0 0% 10%);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .glass-chip:hover {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.55) 0%,
-      rgba(255, 255, 255, 0.35) 100%
-    );
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+  }
+  .glass-chip:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 0.1s;
   }
   .glass-chip-active {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.08) 0%,
-      rgba(0, 0, 0, 0.04) 100%
-    );
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
     color: hsl(0 0% 5%);
   }
   .glass-chip-active:hover {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.12) 0%,
-      rgba(0, 0, 0, 0.06) 100%
-    );
-    border-color: rgba(0, 0, 0, 0.2);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.09);
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
   }
 
   /* Backdrop strip behind chip row for stable contrast */
