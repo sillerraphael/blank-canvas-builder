@@ -26,22 +26,26 @@ interface CategoryGroup {
 const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     id: "verkehr",
-    label: "🚌 Verkehr",
+    label: "Verkehr",
+    icon: "bus",
     categoryIds: ["oepnv", "radweg", "parkplatz"],
   },
   {
     id: "umwelt",
-    label: "🌳 Umwelt & Grünflächen",
+    label: "Umwelt & Grünflächen",
+    icon: "trees",
     categoryIds: ["park", "spielplatz"],
   },
   {
     id: "bebauung",
-    label: "🏗️ Bebauung",
+    label: "Bebauung",
+    icon: "building-2",
     categoryIds: ["bauprojekt"],
   },
   {
     id: "sonstiges",
-    label: "📌 Sonstiges",
+    label: "Sonstiges",
+    icon: "pin",
     categoryIds: ["kultur", "konflikt"],
   },
 ];
