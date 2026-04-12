@@ -310,11 +310,11 @@ export function ChatPanel({
   // ── Expanded panel ─────────────────────────────────────
   return (
     <motion.section
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+      initial={{ opacity: 0, y: isMobile ? 20 : -20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="fixed top-20 right-6 z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden"
-      style={{ width: panelW, height: panelH }}
+      className={`fixed z-20 flex flex-col liquid-glass-panel rounded-[1.5rem] overflow-hidden ${isMobile ? "bottom-3 left-3 right-3" : "top-20 right-6"}`}
+      style={isMobile ? { height: Math.min(panelH, window.innerHeight * 0.6) } : { width: panelW, height: panelH }}
     >
       {/* Header */}
       <div className="px-5 py-3.5 flex items-center gap-3 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
