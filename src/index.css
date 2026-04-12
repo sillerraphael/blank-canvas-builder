@@ -162,18 +162,18 @@
 
   /* Neutral frosted glass — liquid floating chips */
   .glass-chip {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
     color: hsl(0 0% 10%);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .glass-chip:hover {
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(255, 255, 255, 0.75);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     transform: translateY(-1px);
   }
   .glass-chip:active {
