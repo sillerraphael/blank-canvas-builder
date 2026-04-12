@@ -155,7 +155,7 @@ function DropdownGroup({
                     hover:bg-white/30
                   `}
                 >
-                  <span className={`text-base leading-none ${enabled ? "" : "opacity-50"}`}>{cat.emoji}</span>
+                  <LucideIcon name={cat.icon} className={`w-4 h-4 ${enabled ? "text-foreground" : "opacity-50"}`} />
                   <span className="flex-1 text-left font-medium text-[13px]">{cat.label}</span>
                   <div
                     className={`
@@ -222,7 +222,7 @@ export function MapChipBar({
               glass-chip ${initiativeEnabled ? "glass-chip-active" : ""}
             `}
           >
-            <span className={`text-sm leading-none ${initiativeEnabled ? "" : "opacity-40"}`}>{initiativeCat.emoji}</span>
+            <LucideIcon name={initiativeCat.icon} className={`w-4 h-4 ${initiativeEnabled ? "text-foreground" : "opacity-40"}`} />
             <span className={initiativeEnabled ? "text-foreground font-semibold" : "text-foreground/60"}>{initiativeCat.label}</span>
           </button>
         )}
