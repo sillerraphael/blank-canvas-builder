@@ -116,7 +116,7 @@ export default function Onboarding() {
             onClick={handleGoToMap}
             disabled={!canProceed}
             size="lg"
-            className="w-full rounded-xl text-sm"
+            className="w-full rounded-xl text-sm bg-foreground text-background hover:bg-foreground/90"
           >
             Weiter
           </Button>
