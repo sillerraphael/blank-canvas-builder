@@ -61,6 +61,7 @@ export function ChatPanel({
   onScenarioChange,
   onFlyTo,
 }: ChatPanelProps) {
+  const isMobile = useIsMobile();
   const [messages, setMessages] = useState<Message[]>([WELCOME_MSG]);
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
