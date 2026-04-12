@@ -168,7 +168,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
                   onClick={() => navigate(link.path)}
                   className={`text-sm transition-all duration-300 ${
                     isActive
-                      ? "text-primary font-medium border-b-2 border-primary/50 pb-0.5"
+                      ? "text-black font-medium border-b-2 border-black/50 pb-0.5"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
