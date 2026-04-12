@@ -161,7 +161,7 @@ function DropdownGroup({
                     hover:bg-white/30
                   `}
                 >
-                  <LucideIcon name={cat.icon} className="w-4 h-4 text-foreground" />
+                  
                   <span className="flex-1 text-left font-medium text-[13px]">{cat.label}</span>
                   <div
                     className={`
