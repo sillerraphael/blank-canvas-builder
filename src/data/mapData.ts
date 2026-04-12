@@ -34,8 +34,8 @@ export interface Scenario {
 }
 
 export const scenarios: Scenario[] = [
-  { id: "realitaet", label: "bereits umgesetzt", description: "Was gerade in der Stadt ist" },
-  { id: "zukunft", label: "in Umsetzung", description: "Was der Stadtrat plant" },
+  { id: "realitaet", label: "Bereits Umgesetzt", description: "Was gerade in der Stadt ist" },
+  { id: "zukunft", label: "In Umsetzung\n", description: "Was der Stadtrat plant" },
 ];
 
 // ── Point marker data ────────────────────────────────────────────────
