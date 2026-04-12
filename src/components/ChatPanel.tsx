@@ -161,19 +161,14 @@ export function ChatPanel({
       const filters: Record<string, boolean> = {};
       allCats.forEach((c) => { filters[c.id] = !disabledCategories.has(c.id); });
 
-      // Extract user location from localStorage
+      // Extract user location from auth store (works for both BayernID and normal login)
       let user_lat: number | null = null;
       let user_lng: number | null = null;
-      try {
-        const stored = localStorage.getItem("bayernUser");
-        if (stored) {
-          const user = JSON.parse(stored);
-          if (user?.location?.lat != null && user?.location?.lng != null) {
-            user_lat = user.location.lat;
-            user_lng = user.location.lng;
-          }
-        }
-      } catch { /* ignore parse errors */ }
+      const authState = useAuthStore.getState();
+      if (authState.bayernUser?.location?.lat != null && authState.bayernUser?.location?.lng != null) {
+        user_lat = authState.bayernUser.location.lat;
+        user_lng = authState.bayernUser.location.lng;
+      }
 
       const res = await fetch("https://hook.eu1.make.com/w7v4l1y8819hfzewe1p36xt6m6v691yr", {
         method: "POST",
