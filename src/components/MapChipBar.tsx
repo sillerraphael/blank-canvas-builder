@@ -1,8 +1,20 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, icons } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Helper to render a Lucide icon by kebab-case name
+function LucideIcon({ name, className }: { name: string; className?: string }) {
+  // Convert kebab-case to PascalCase
+  const pascalName = name
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+  const IconComponent = (icons as any)[pascalName];
+  if (!IconComponent) return null;
+  return <IconComponent className={className} />;
+}
 
 // ── Category group definitions ──
 interface CategoryGroup {
