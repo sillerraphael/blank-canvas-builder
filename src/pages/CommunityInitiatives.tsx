@@ -105,39 +105,30 @@ export default function CommunityInitiatives() {
                   className="p-5 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center gap-1 pt-0.5">
+                    <div className="flex flex-col items-center gap-1.5 pt-0.5">
                       <button
                         onClick={() => handleVote(init.id, "up")}
                         disabled={isSavingVote}
-                        className={`p-1.5 rounded-lg transition-colors disabled:opacity-60 ${
+                        className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors disabled:opacity-60 ${
                           userVote === "up"
                             ? "bg-primary/20 text-primary"
                             : "hover:bg-primary/10 text-muted-foreground hover:text-primary"
                         }`}
                       >
-                        <ThumbsUp className="w-4 h-4" />
+                        <ThumbsUp className="w-3.5 h-3.5" />
+                        <span className="text-xs font-bold">{displayUpvotes}</span>
                       </button>
-                      <span
-                        className={`text-sm font-bold min-w-[24px] text-center ${
-                          netScore > 0
-                            ? "text-primary"
-                            : netScore < 0
-                            ? "text-destructive"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {netScore}
-                      </span>
                       <button
                         onClick={() => handleVote(init.id, "down")}
                         disabled={isSavingVote}
-                        className={`p-1.5 rounded-lg transition-colors disabled:opacity-60 ${
+                        className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-colors disabled:opacity-60 ${
                           userVote === "down"
                             ? "bg-destructive/20 text-destructive"
                             : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
                         }`}
                       >
-                        <ThumbsDown className="w-4 h-4" />
+                        <ThumbsDown className="w-3.5 h-3.5" />
+                        <span className="text-xs font-bold">{displayDownvotes}</span>
                       </button>
                     </div>
 
