@@ -24,7 +24,7 @@ import { toast } from "sonner";
 
 const navLinks = [
   { label: "Karte", path: "/" },
-  { label: "Initiative", path: "/initiativen" },
+  { label: "Initiativen", path: "/initiativen" },
   { label: "Abonnements", path: "/abonnements" },
 ];
 
