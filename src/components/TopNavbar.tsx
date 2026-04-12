@@ -155,7 +155,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
       <header className="fixed top-0 left-0 right-0 z-[55] flex justify-between items-center px-8 h-[72px] glass-chip border-t-0 rounded-none border-x-0 border-b border-b-white/20">
         <div className="flex items-center gap-8">
           <span className="text-xl font-semibold bg-gradient-to-br from-primary to-[hsl(var(--primary-container))] bg-clip-text text-transparent tracking-tight">
-            Agorum
+            Agorix
           </span>
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => {
