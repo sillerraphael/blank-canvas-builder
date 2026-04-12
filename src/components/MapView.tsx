@@ -18,11 +18,80 @@ import { useInitiatives, useCreateInitiative } from "@/hooks/useInitiatives";
 import { useSubscriptions, useToggleSubscription } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/lib/authStore";
 import { CreateInitiativeModal } from "@/components/CreateInitiativeModal";
-import { Loader2, Plus, MapPin } from "lucide-react";
+import { Loader2, Plus, MapPin, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import { scenarios } from "@/data/mapData";
 
 // Module-level ref updated by the component
 let _categories: MarkerCategory[] = [];
+
+/** Collapsible filter bar for mobile — collapsed by default */
+function MobileFilterBar({
+  activeScenario,
+  onScenarioChange,
+  disabledCategories,
+  onToggleCategory,
+  categories,
+}: {
+  activeScenario: ScenarioId;
+  onScenarioChange: (id: ScenarioId) => void;
+  disabledCategories: Set<string>;
+  onToggleCategory: (id: string) => void;
+  categories: MarkerCategory[];
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="absolute top-[56px] left-0 right-0 z-30 md:hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="mx-3 mt-2 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-medium glass-chip pointer-events-auto"
+      >
+        <SlidersHorizontal className="w-3.5 h-3.5" />
+        Filter
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+      </button>
+
+      {expanded && (
+        <div className="mx-3 mt-1.5 p-2 rounded-2xl glass-chip pointer-events-auto animate-in fade-in slide-in-from-top-1 duration-150">
+          {/* Scenario toggles */}
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {scenarios.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => onScenarioChange(s.id)}
+                className={`text-[11px] px-2.5 py-1 rounded-lg transition-all whitespace-nowrap
+                  ${activeScenario === s.id ? "bg-primary/15 text-primary font-medium" : "text-foreground/60"}`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+          <div className="h-px bg-foreground/10 mb-2" />
+          {/* Category toggles */}
+          <div className="flex flex-wrap gap-1.5">
+            {categories
+              .filter((c) => c.id !== "wohnort")
+              .map((cat) => {
+                const enabled = !disabledCategories.has(cat.id);
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => onToggleCategory(cat.id)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium transition-all
+                      ${enabled ? "bg-primary/12 text-foreground" : "text-foreground/40"}`}
+                  >
+                    <span className={`text-sm ${enabled ? "" : "opacity-40"}`}>{cat.emoji}</span>
+                    {cat.label}
+                  </button>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getCategoryMeta(categoryId: string) {
   return _categories.find((c) => c.id === categoryId);
@@ -870,9 +939,10 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
         />
       )}
 
-      {/* Subtle backdrop strip for contrast stability — hidden on mobile */}
-      <div className="absolute top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip hidden md:block" />
+      {/* Subtle backdrop strip for contrast stability */}
+      <div className="absolute top-[56px] md:top-[56px] left-0 right-0 h-28 z-29 glass-chip-strip hidden md:block" />
 
+      {/* Desktop filters */}
       <div className="absolute top-[84px] left-3 sm:left-4 right-3 sm:right-4 z-30 pointer-events-none hidden md:block">
         <MapChipBar
           activeScenario={activeScenario}
@@ -883,6 +953,15 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
           streetCategories={_categories.filter(c => ["radweg","parkplatz","park","spielplatz"].includes(c.id))}
         />
       </div>
+
+      {/* Mobile collapsible filters */}
+      <MobileFilterBar
+        activeScenario={activeScenario}
+        onScenarioChange={onScenarioChange}
+        disabledCategories={disabledCategories}
+        onToggleCategory={onToggleCategory}
+        categories={_categories}
+      />
 
       {/* Custom zoom controls */}
       <div className="absolute bottom-4 left-4 z-30 flex flex-col gap-1">
