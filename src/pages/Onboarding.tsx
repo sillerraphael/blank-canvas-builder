@@ -104,7 +104,7 @@ export default function Onboarding() {
                 key={topic.id}
                 topic={topic}
                 isSelected={isSelected}
-                onToggle={() => setPriority(topic.id, isSelected ? null : "medium")}
+                onToggle={() => setPriority(topic.id, isSelected ? null : "high")}
               />
             );
           })}
