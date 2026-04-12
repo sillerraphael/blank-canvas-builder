@@ -269,11 +269,11 @@ export function ChatPanel({
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: isMobile ? 20 : -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="fixed top-20 right-6 z-20"
-        style={{ width: panelW }}
+        className={`fixed z-20 ${isMobile ? "bottom-3 left-3 right-3" : "top-20 right-6"}`}
+        style={isMobile ? {} : { width: panelW }}
       >
         <div className="liquid-glass-panel rounded-[1.5rem] p-1.5">
           <div className="flex items-center gap-2 px-4 py-2.5">
