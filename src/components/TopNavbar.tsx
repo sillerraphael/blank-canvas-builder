@@ -227,7 +227,7 @@ export function TopNavbar({ onNewInitiative }: TopNavbarProps) {
           ) : (
             <Button
               size="sm"
-              className="rounded-xl gap-2 backdrop-blur-md bg-primary/80 text-primary-foreground hover:bg-primary/90 shadow-sm border-0"
+              className="rounded-xl gap-2 backdrop-blur-md text-primary-foreground shadow-sm border-0 bg-black"
               onClick={() => setShowLoginDialog(true)}
             >
               Login
