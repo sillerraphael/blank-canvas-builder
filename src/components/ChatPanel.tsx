@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData";
 import { useMapCategories } from "@/hooks/useMapData";
 import { usePretextLayout } from "@/hooks/usePretextLayout";
+import { useAuthStore } from "@/lib/authStore";
 
 interface Message {
   id: number;
