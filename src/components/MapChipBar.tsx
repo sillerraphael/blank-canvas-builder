@@ -92,7 +92,7 @@ function DropdownGroup({
         ref={buttonRef}
         onClick={handleToggle}
         className={`
-          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-[12px] sm:text-[13px] font-medium
+          flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-medium
           whitespace-nowrap transition-all duration-200
           glass-chip ${someEnabled ? "glass-chip-active" : ""}
         `}
@@ -182,7 +182,7 @@ export function MapChipBar({
   const initiativeEnabled = initiativeCat ? !disabledCategories.has("initiative") : false;
 
   return (
-    <div className="flex flex-col gap-2 pointer-events-auto">
+    <div className="flex flex-col gap-1.5 pointer-events-auto">
       {/* Scenario pill toggle */}
       <div className="flex flex-wrap justify-start gap-1.5">
         {scenarios.map((s) => (
@@ -190,8 +190,8 @@ export function MapChipBar({
             key={s.id}
             onClick={() => onScenarioChange(s.id)}
             className={`
-              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 whitespace-pre-line shrink-0
-              glass-chip ${activeScenario === s.id ? "glass-chip-active font-medium text-foreground" : "font-medium text-foreground/70"}
+              text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-full transition-all duration-200 whitespace-pre-line shrink-0
+              glass-chip ${activeScenario === s.id ? "glass-chip-active font-semibold text-foreground" : "font-medium text-foreground/60"}
             `}
           >
             {s.label}
@@ -200,18 +200,18 @@ export function MapChipBar({
       </div>
 
       {/* Group dropdown buttons + initiative chip */}
-      <div className="flex flex-wrap gap-1.5 sm:gap-2 pb-1">
+      <div className="flex flex-wrap gap-1.5 sm:gap-1.5 pb-1">
         {initiativeCat && (
           <button
             onClick={() => onToggleCategory("initiative")}
             className={`
-              flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-[12px] sm:text-[13px] font-medium
+              flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[12px] sm:text-[13px] font-medium
               whitespace-nowrap shrink-0 transition-all duration-200
               glass-chip ${initiativeEnabled ? "glass-chip-active" : ""}
             `}
           >
-            <span className={`text-base leading-none ${initiativeEnabled ? "" : "opacity-50"}`}>{initiativeCat.emoji}</span>
-            <span className={initiativeEnabled ? "text-foreground" : "text-foreground/80"}>{initiativeCat.label}</span>
+            <span className={`text-sm leading-none ${initiativeEnabled ? "" : "opacity-40"}`}>{initiativeCat.emoji}</span>
+            <span className={initiativeEnabled ? "text-foreground font-semibold" : "text-foreground/60"}>{initiativeCat.label}</span>
           </button>
         )}
 
