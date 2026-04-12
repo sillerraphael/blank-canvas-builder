@@ -167,7 +167,7 @@ function DropdownGroup({
                     className={`
                       w-8 h-[18px] rounded-full relative transition-all duration-300
                       ${enabled
-                        ? "bg-gradient-to-b from-[hsla(213,80%,58%,0.85)] to-[hsla(220,75%,48%,0.78)] shadow-[0_2px_8px_hsla(220,80%,45%,0.3),inset_0_1px_0_hsla(0,0%,100%,0.35)]"
+                        ? "bg-gradient-to-b from-[hsla(213,80%,60%,0.45)] to-[hsla(220,75%,50%,0.35)] shadow-[0_2px_8px_hsla(220,80%,50%,0.15),inset_0_1px_0_hsla(0,0%,100%,0.4)]"
                         : "bg-foreground/15"}
                     `}
                   >
