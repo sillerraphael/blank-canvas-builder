@@ -475,22 +475,19 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
 
     const wohnortIcon = L.divIcon({
       className: "",
-      iconSize: [14, 14],
-      iconAnchor: [7, 7],
-      popupAnchor: [0, -10],
-      html: `<div style="
-        width:14px;height:14px;
-        background:#dc2626;
-        border:2px solid white;
-        border-radius:50%;
-        box-shadow:0 0 0 3px rgba(220,38,38,0.2), 0 1px 4px rgba(0,0,0,0.15);
-      "></div>`,
+      iconSize: [28, 40],
+      iconAnchor: [14, 40],
+      popupAnchor: [0, -42],
+      html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 24 36" fill="none">
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24s12-15 12-24c0-6.627-5.373-12-12-12z" fill="#dc2626"/>
+        <circle cx="12" cy="12" r="5" fill="white"/>
+      </svg>`,
     });
 
     const marker = L.marker([loc.lat, loc.lng], { icon: wohnortIcon, zIndexOffset: 1000 })
       .addTo(map)
       .bindPopup(
-        '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600">🏠 Mein Standort</div>',
+        '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600">🏠 Mein Wohnsitz</div>',
         { closeButton: false },
       );
     homeMarkerRef.current = marker;
