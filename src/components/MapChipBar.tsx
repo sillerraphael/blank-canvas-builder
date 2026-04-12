@@ -166,7 +166,7 @@ function DropdownGroup({
                   <div
                     className={`
                       w-8 h-[18px] rounded-full relative transition-colors duration-200
-                      ${enabled ? "bg-primary" : "bg-foreground/15"}
+                      ${enabled ? "bg-foreground" : "bg-foreground/15"}
                     `}
                   >
                     <div
@@ -209,7 +209,7 @@ export function MapChipBar({
             onClick={() => onScenarioChange(s.id)}
             className={`
               text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 rounded-full whitespace-pre-line shrink-0
-              glass-chip ${activeScenario === s.id ? "glass-chip-active text-foreground" : "text-foreground/60"}
+              glass-chip ${activeScenario === s.id ? "glass-chip-active" : ""}
             `}
           >
             {s.label}
