@@ -475,10 +475,10 @@ export function MapView({ activeScenario, onScenarioChange, disabledCategories, 
 
     const wohnortIcon = L.divIcon({
       className: "",
-      iconSize: [28, 40],
-      iconAnchor: [14, 40],
-      popupAnchor: [0, -42],
-      html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 24 36" fill="none">
+      iconSize: [20, 28],
+      iconAnchor: [10, 28],
+      popupAnchor: [0, -30],
+      html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="0 0 24 36" fill="none">
         <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24s12-15 12-24c0-6.627-5.373-12-12-12z" fill="#dc2626"/>
         <circle cx="12" cy="12" r="5" fill="white"/>
       </svg>`,
