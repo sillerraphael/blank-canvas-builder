@@ -269,7 +269,7 @@ export function ChatPanel({
               value={input}
               onChange={handleCompactInput}
               onKeyDown={handleKeyDown}
-              placeholder="Frag den Agorum Assistenten..."
+              placeholder="Frag den Agorix Assistenten..."
               rows={1}
               className="flex-1 bg-transparent text-sm outline-none resize-none overflow-hidden leading-snug"
               style={{ color: "#2c2f31", fontFamily: "Inter, sans-serif", maxHeight: "120px" }}
