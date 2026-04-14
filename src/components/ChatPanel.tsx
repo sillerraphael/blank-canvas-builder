@@ -175,7 +175,7 @@ export function ChatPanel({
         user_lng = authState.bayernUser.location.lng;
       }
 
-      const res = await fetch("https://hook.eu1.make.com/94wpiq4jr89va6m6h9iqj7cdjekmn16s", {
+      const res = await fetch("https://hook.eu1.make.com/g7f4h8oqro70ypkw4u7i1krdjj4q7mds", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
