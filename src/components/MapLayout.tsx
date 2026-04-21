@@ -151,7 +151,7 @@ export default function MapLayout() {
             {/* Frosted glass backdrop */}
             <div className="absolute inset-0 backdrop-blur-md bg-background/60" />
             {/* Page content */}
-            <div className="relative z-[1] overflow-y-auto overflow-x-hidden h-full pt-[72px]">
+            <div className="relative z-[1] overflow-y-auto h-full pt-[72px] touch-pan-y">
               <Outlet context={outletCtx} />
             </div>
           </div>
