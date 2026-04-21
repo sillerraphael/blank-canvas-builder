@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import Onboarding from "./pages/Onboarding.tsx";
 import CommunityInitiatives from "./pages/CommunityInitiatives.tsx";
 import Subscriptions from "./pages/Subscriptions.tsx";
+import ListView from "./pages/ListView.tsx";
 import BayernIDLogin from "./pages/BayernIDLogin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -30,6 +31,7 @@ const App = () => (
           {/* Routes with persistent map background */}
           <Route element={<MapLayout />}>
             <Route path="/" element={<Index />} />
+            <Route path="/liste" element={<ListView />} />
             <Route path="/initiativen" element={<CommunityInitiatives />} />
             <Route path="/abonnements" element={<Subscriptions />} />
           </Route>

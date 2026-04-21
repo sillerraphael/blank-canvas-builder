@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import type { MapFlyTo } from "@/components/MapView";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 
 import { TopNavbar } from "@/components/TopNavbar";
 import { MapView } from "@/components/MapView";
@@ -9,6 +9,19 @@ import { type ScenarioId } from "@/data/mapData";
 import { useAuthStore } from "@/lib/authStore";
 import { getActiveLayersFromPriorities, getMappedCategoryIds } from "@/lib/priorityLayerMapping";
 import { useMapCategories } from "@/hooks/useMapData";
+
+export interface MapOutletContext {
+  activeScenario: ScenarioId;
+  setActiveScenario: (id: ScenarioId) => void;
+  disabledCategories: Set<string>;
+  toggleCategory: (id: string) => void;
+  categoryData: ReturnType<typeof useMapCategories>["data"];
+  flyTo: (lat: number, lng: number, zoom?: number) => void;
+}
+
+export function useMapOutletContext() {
+  return useOutletContext<MapOutletContext>();
+}
 
 export default function MapLayout() {
   const navigate = useNavigate();
@@ -84,6 +97,21 @@ export default function MapLayout() {
   const isMapPage = location.pathname === "/";
   const hasOverlay = !isMapPage; // sub-pages get the glass overlay
 
+  const handleFlyTo = useCallback((lat: number, lng: number, zoom?: number) => {
+    navigate("/");
+    // Small delay to ensure map page is mounted before flying
+    setTimeout(() => flyToRef.current?.(lat, lng, zoom), 100);
+  }, [navigate]);
+
+  const outletCtx = useMemo<MapOutletContext>(() => ({
+    activeScenario,
+    setActiveScenario,
+    disabledCategories,
+    toggleCategory,
+    categoryData,
+    flyTo: handleFlyTo,
+  }), [activeScenario, setActiveScenario, disabledCategories, toggleCategory, categoryData, handleFlyTo]);
+
   return (
     <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
       <TopNavbar onNewInitiative={() => {
@@ -124,7 +152,7 @@ export default function MapLayout() {
             <div className="absolute inset-0 backdrop-blur-md bg-background/60" />
             {/* Page content */}
             <div className="relative z-[1] overflow-y-auto h-full pt-[72px]">
-              <Outlet />
+              <Outlet context={outletCtx} />
             </div>
           </div>
         )}
