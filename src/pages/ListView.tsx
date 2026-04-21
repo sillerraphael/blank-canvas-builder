@@ -194,7 +194,7 @@ function ListItemRow({
     <div className="group">
       <button
         onClick={onToggle}
-        className="w-full text-left p-4 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all duration-200 hover:border-border/80"
+        className="w-full text-left p-3 md:p-4 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all duration-200 hover:border-border/80"
       >
         <div className="flex items-center gap-3">
           <div
@@ -235,7 +235,7 @@ function ListItemRow({
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="mx-2 mt-1 mb-2 p-4 rounded-2xl bg-card/90 backdrop-blur-sm border border-border/40 shadow-inner">
+            <div className="mx-1 mt-1 mb-2 p-3 md:p-4 rounded-2xl bg-card/90 backdrop-blur-sm border border-border/40 shadow-inner">
               {item.type === "marker" ? (
                 <MarkerDetail m={item.data as MapMarkerData} />
               ) : (
@@ -596,7 +596,7 @@ export default function ListView() {
   const activeFilterCount = filterableCategories.filter((c) => !disabledCategories.has(c.id)).length;
 
   return (
-    <div className="flex min-h-[calc(100vh-72px)] items-start relative">
+    <div className="flex min-h-[calc(100vh-72px)] items-start relative w-full min-w-0">
       {/* ── Desktop sidebar ──────────────────────────── */}
       <div className="hidden md:block sticky top-0 h-[calc(100vh-72px)]">
         <FilterSidebar
@@ -646,7 +646,7 @@ export default function ListView() {
       <div className="flex-1 pb-10">
         {/* Page header */}
         <header className="border-b border-border/40 bg-background/60 backdrop-blur-sm">
-          <div className="max-w-3xl mx-auto px-6 py-4">
+          <div className="max-w-3xl mx-auto px-4 md:px-6 py-4">
             <div className="flex items-center gap-3 mb-1">
               <MapPin className="w-5 h-5 text-primary" />
               <h1 className="text-lg font-bold text-foreground">Listenansicht</h1>
@@ -659,7 +659,7 @@ export default function ListView() {
         </header>
 
         {/* Content */}
-        <main className="max-w-3xl mx-auto px-6 py-6 space-y-6">
+        <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 space-y-6">
           {isLoading && (
             <div className="flex items-center justify-center py-20">
               <div className="flex items-center gap-3 bg-background/90 px-6 py-4 rounded-2xl shadow-lg border border-border/30">
