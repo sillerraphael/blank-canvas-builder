@@ -27,7 +27,9 @@ This is a Munich city-planning map application with a German UI. Users can view 
 
 `MapLayout` is the persistent shell for most routes — the Leaflet map is **always rendered** in the background. Sub-pages (`/liste`, `/initiativen`, `/abonnements`) render as frosted-glass overlays on top of the map via React Router's `<Outlet>`. Standalone routes (`/onboarding`, `/bayernid-login`) bypass `MapLayout` entirely.
 
-Child routes access shared map state (active scenario, disabled categories, flyTo) via `useMapOutletContext()`, which wraps `useOutletContext<MapOutletContext>()`.
+Child routes access shared map state (active scenario, disabled categories, flyTo) via `useMapOutletContext()`, which
+
+ wraps `useOutletContext<MapOutletContext>()`.
 
 ### Data Flow
 
