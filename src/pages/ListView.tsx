@@ -643,10 +643,10 @@ export default function ListView() {
       </AnimatePresence>
 
       {/* ── Main content area ────────────────────────── */}
-      <div className="flex-1 pb-10">
+      <div className="flex-1 min-w-0 pb-10">
         {/* Page header */}
         <header className="border-b border-border/40 bg-background/60 backdrop-blur-sm">
-          <div className="max-w-3xl mx-auto px-4 md:px-6 py-4">
+          <div className="px-4 md:max-w-3xl md:mx-auto md:px-6 py-4">
             <div className="flex items-center gap-3 mb-1">
               <MapPin className="w-5 h-5 text-primary" />
               <h1 className="text-lg font-bold text-foreground">Listenansicht</h1>
@@ -659,7 +659,7 @@ export default function ListView() {
         </header>
 
         {/* Content */}
-        <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <main className="px-4 md:max-w-3xl md:mx-auto md:px-6 py-6 space-y-6">
           {isLoading && (
             <div className="flex items-center justify-center py-20">
               <div className="flex items-center gap-3 bg-background/90 px-6 py-4 rounded-2xl shadow-lg border border-border/30">
