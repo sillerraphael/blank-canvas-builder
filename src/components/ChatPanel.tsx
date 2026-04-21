@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Send, Sparkles, MessageCircle, Minus, GripVertical } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { scenarios, type ScenarioId, type MarkerCategory } from "@/data/mapData";
@@ -50,6 +50,8 @@ const MIN_W = 300;
 const MIN_H = 200;
 const MAX_W = 900;
 const MAX_H_RATIO = 0.85;
+// Characters revealed per 16ms tick during typewriter streaming
+const STREAM_CHARS_PER_TICK = 3;
 
 export function ChatPanel({
   activeScenario,
@@ -68,22 +70,47 @@ export function ChatPanel({
   const [isMinimized, setIsMinimized] = useState(false);
   const [panelW, setPanelW] = useState(COLLAPSED_W);
   const [panelH, setPanelH] = useState(420);
+  // ID of the assistant message currently being streamed (null when idle)
+  const [streamingId, setStreamingId] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const compactInputRef = useRef<HTMLTextAreaElement>(null);
+  const streamIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: categoryData } = useMapCategories();
   const allCats = categoryData?.allCategories ?? [];
   const maxH = Math.floor(window.innerHeight * MAX_H_RATIO);
-  const { measureMessages } = usePretextLayout();
+  const { measureBubble, measureMessages } = usePretextLayout();
 
-  // Auto-grow height using pretext (no DOM measurement needed), then scroll to bottom
+  // ── Pretext: shrinkwrap bubble dimensions ──────────────
+  // Max outer bubble width mirrors CSS max-w-[80%] of the scroll container
+  // (scroll container = panelW - px-5*2 = panelW - 40; mobile = screen - anchors - padding)
+  const maxBubbleW = useMemo(() => {
+    const containerW = isMobile
+      ? Math.max(window.innerWidth - 64, 200)
+      : panelW - 40;
+    return containerW * 0.8;
+  }, [isMobile, panelW]);
+
+  // Compute exact shrinkwrapped width + height for every bubble — pure arithmetic, no DOM.
+  // Re-runs on every message update (streaming ticks) and on panel resize.
+  const bubbleDims = useMemo(
+    () => new Map(messages.map((msg) => [msg.id, measureBubble(msg.content, maxBubbleW)])),
+    [messages, maxBubbleW, measureBubble]
+  );
+
+  // Cleanup streaming interval on unmount
   useEffect(() => {
-    // Use pretext to calculate ideal height without DOM
+    return () => {
+      if (streamIntervalRef.current) clearInterval(streamIntervalRef.current);
+    };
+  }, []);
+
+  // ── Auto-grow panel height (pretext, no DOM) + smooth scroll on new messages ──
+  // Uses functional update so the condition reads the latest panelH without needing
+  // it in deps (which would make auto-grow fight the user's manual resize).
+  useEffect(() => {
     const idealH = measureMessages(messages, panelW);
-    if (idealH > panelH && panelH < maxH) {
-      setPanelH(Math.min(idealH, maxH));
-    }
-    // Scroll to bottom
+    setPanelH((prev) => idealH > prev && prev < maxH ? Math.min(idealH, maxH) : prev);
     const el = scrollRef.current;
     if (el) {
       requestAnimationFrame(() => {
@@ -91,6 +118,14 @@ export function ChatPanel({
       });
     }
   }, [messages, maxH, panelW, measureMessages]);
+
+  // ── Maintain bottom anchor when panel is resized ───────────────────────────
+  // When panelH shrinks the scroll container also shrinks. Without re-anchoring,
+  // the same scrollTop value now shows earlier messages instead of the latest ones.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [panelH]);
 
   // ── Edge/corner resize handler ─────────────────────────
   type ResizeEdge = "left" | "bottom" | "bottom-left" | "top" | "top-left";
@@ -138,13 +173,32 @@ export function ChatPanel({
         if (cat) onDisableCategory(cat.id);
       } else if (action.startsWith("scenario:")) {
         let id = action.replace("scenario:", "").trim();
-        // Support aliases from webhook
         if (id === "reality") id = "realitaet";
         const valid = scenarios.find((s) => s.id === id);
         if (valid) onScenarioChange(valid.id);
       }
     }
   }, [onEnableCategory, onDisableCategory, onShowOnlyCategory, onDisableAllCategories, onScenarioChange, allCats]);
+
+  // ── Stream assistant reply character by character ──────
+  // Pretext recomputes shrinkwrapped bubble dims on each tick — the bubble
+  // grows smoothly to its final width with no DOM measurement or layout reflow.
+  const startStreaming = useCallback((fullText: string, msgId: number) => {
+    if (streamIntervalRef.current) clearInterval(streamIntervalRef.current);
+    setStreamingId(msgId);
+    let charI = 0;
+    streamIntervalRef.current = setInterval(() => {
+      charI = Math.min(charI + STREAM_CHARS_PER_TICK, fullText.length);
+      setMessages((prev) =>
+        prev.map((m) => m.id === msgId ? { ...m, content: fullText.slice(0, charI) } : m)
+      );
+      if (charI >= fullText.length) {
+        clearInterval(streamIntervalRef.current!);
+        streamIntervalRef.current = null;
+        setStreamingId(null);
+      }
+    }, 16);
+  }, []);
 
   // ── Send message ───────────────────────────────────────
   const sendMessage = useCallback(async () => {
@@ -159,14 +213,10 @@ export function ChatPanel({
     ]);
     setInput("");
 
-
-
-
     try {
       const filters: Record<string, boolean> = {};
       allCats.forEach((c) => { filters[c.id] = !disabledCategories.has(c.id); });
 
-      // Extract user location from auth store (works for both BayernID and normal login)
       let user_lat: number | null = null;
       let user_lng: number | null = null;
       const authState = useAuthStore.getState();
@@ -198,7 +248,6 @@ export function ChatPanel({
             if (parsed && typeof parsed === "object" && "reply" in parsed) {
               displayText = parsed.reply;
               handleMapAction(parsed.map_action);
-              // Fly to location if coordinates provided
               const lat = parsed.target_lat;
               const lng = parsed.target_lng;
               if (typeof lat === "number" && typeof lng === "number" && isFinite(lat) && isFinite(lng)) {
@@ -206,16 +255,20 @@ export function ChatPanel({
               }
             }
           } catch { /* raw text */ }
+
+          // Insert empty placeholder, then stream text in — pretext drives the bubble growth
+          const newId = Date.now() + 1;
           setMessages((prev) => [
             ...prev,
-            { id: Date.now() + 1, role: "assistant", content: displayText, time: formatTime() },
+            { id: newId, role: "assistant", content: "", time: formatTime() },
           ]);
+          startStreaming(displayText, newId);
         }
       }
     } catch (err) {
       console.error("Webhook error:", err);
     }
-  }, [input, isExpanded, activeScenario, disabledCategories, onEnableCategory, onDisableCategory, onShowOnlyCategory, onScenarioChange, allCats, handleMapAction]);
+  }, [input, isExpanded, activeScenario, disabledCategories, allCats, handleMapAction, startStreaming, onFlyTo]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -253,15 +306,11 @@ export function ChatPanel({
 
   // ── Compact state: just input bar (before first user message) ──
   if (!isExpanded) {
-    // Measure how wide the compact input text needs to be, and grow panel accordingly
-
     const handleCompactInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value);
-      // Auto-resize textarea height
       const ta = e.target;
       ta.style.height = "auto";
       ta.style.height = ta.scrollHeight + "px";
-      // Grow panel width if text overflows (measure scrollWidth vs clientWidth)
       if (ta.scrollWidth > ta.clientWidth) {
         setPanelW((prev) => Math.min(prev + 40, MAX_W));
       }
@@ -339,41 +388,63 @@ export function ChatPanel({
       {/* Messages area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0 scrollbar-hide">
         <AnimatePresence initial={false}>
-          {messages.map((msg) => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, y: 12, x: msg.role === "user" ? 16 : -16 }}
-              animate={{ opacity: 1, y: 0, x: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 24 }}
-              layout
-              className={`flex items-end gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
-            >
-              <div className={`flex flex-col gap-1 max-w-[80%] ${msg.role === "user" ? "items-end" : ""}`}>
+          {messages.map((msg) => {
+            // Pretext-computed shrinkwrap: exact width the content needs, no CSS guessing
+            const dims = bubbleDims.get(msg.id) ?? { width: maxBubbleW, height: 45 };
+            const isStreaming = msg.id === streamingId;
+            return (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 12, x: msg.role === "user" ? 16 : -16 }}
+                animate={{ opacity: 1, y: 0, x: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                className={`flex items-end gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+              >
+                {/*
+                  Width is driven by pretext measureBubble() — the bubble grows to exactly
+                  fit its longest line. During streaming each tick recomputes dims, so the
+                  bubble expands smoothly as characters arrive without any DOM measurement.
+                */}
                 <div
-                  className="px-4 py-3 text-[14px] leading-relaxed rounded-[1.25rem]"
-                  style={msg.role === "user"
-                    ? {
-                        background: "linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.08))",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(0,0,0,0.1)",
-                        color: "#1a1a2e",
-                        borderBottomRightRadius: "0.375rem",
-                      }
-                    : {
-                        background: "rgba(238,241,243,0.4)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        color: "#2c2f31",
-                        borderBottomLeftRadius: "0.375rem",
-                      }
-                  }
+                  className={`flex flex-col gap-1 ${msg.role === "user" ? "items-end" : ""}`}
+                  style={{
+                    width: dims.width,
+                    transition: isStreaming ? "width 50ms ease-out" : "none",
+                  }}
                 >
-                  <span className="whitespace-pre-line">{renderContent(msg.content)}</span>
+                  <div
+                    className="px-4 py-3 text-[14px] leading-relaxed rounded-[1.25rem] w-full"
+                    style={msg.role === "user"
+                      ? {
+                          background: "linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.08))",
+                          backdropFilter: "blur(20px)",
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          color: "#1a1a2e",
+                          borderBottomRightRadius: "0.375rem",
+                        }
+                      : {
+                          background: "rgba(238,241,243,0.4)",
+                          backdropFilter: "blur(20px)",
+                          border: "1px solid rgba(255,255,255,0.2)",
+                          color: "#2c2f31",
+                          borderBottomLeftRadius: "0.375rem",
+                        }
+                    }
+                  >
+                    <span className="whitespace-pre-line">{renderContent(msg.content)}</span>
+                    {/* Blinking cursor shown while this message is being streamed */}
+                    {isStreaming && (
+                      <span
+                        className="inline-block w-[2px] h-[14px] rounded-sm ml-0.5 align-middle animate-pulse"
+                        style={{ background: "#595c5e" }}
+                      />
+                    )}
+                  </div>
+                  <span className="text-[10px] font-medium px-1" style={{ color: "#abadaf" }}>{msg.time}</span>
                 </div>
-                <span className="text-[10px] font-medium px-1" style={{ color: "#abadaf" }}>{msg.time}</span>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
 
@@ -393,35 +464,32 @@ export function ChatPanel({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Nachricht eingeben..."
-            className="flex-1 bg-transparent text-sm outline-none"
+            className="flex-1 min-w-0 bg-transparent text-sm outline-none"
             style={{ color: "#2c2f31", fontFamily: "Inter, sans-serif" }}
           />
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={sendMessage}
-            className="h-9 px-4 rounded-full flex items-center justify-center gap-1.5 text-white text-xs font-semibold shrink-0"
+            className="h-9 rounded-full flex items-center justify-center gap-1.5 text-white text-xs font-semibold shrink-0 whitespace-nowrap"
             style={{
               background: "linear-gradient(135deg, #1a1a1a, #3a3a3a)",
               boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+              padding: panelW >= 380 ? "0 16px" : "0 10px",
             }}
           >
-            Search <Send className="w-3.5 h-3.5" />
+            {panelW >= 380 && <span>Search</span>}
+            <Send className="w-3.5 h-3.5" />
           </motion.button>
         </div>
       </div>
 
       {/* Resize handles — all edges */}
-      {/* Left edge */}
       <div onPointerDown={onResizeStart("left")} className="absolute left-0 top-8 bottom-8 w-2 cursor-ew-resize" style={{ touchAction: "none" }} />
-      {/* Bottom edge */}
       <div onPointerDown={onResizeStart("bottom")} className="absolute bottom-0 left-8 right-8 h-2 cursor-ns-resize" style={{ touchAction: "none" }} />
-      {/* Top edge */}
       <div onPointerDown={onResizeStart("top")} className="absolute top-0 left-8 right-8 h-2 cursor-ns-resize" style={{ touchAction: "none" }} />
-      {/* Bottom-left corner */}
       <div onPointerDown={onResizeStart("bottom-left")} className="absolute bottom-0 left-0 w-5 h-5 cursor-nesw-resize opacity-30 hover:opacity-60 transition-opacity flex items-center justify-center" style={{ touchAction: "none" }}>
         <GripVertical className="w-3 h-3 rotate-45" style={{ color: "#595c5e" }} />
       </div>
-      {/* Top-left corner */}
       <div onPointerDown={onResizeStart("top-left")} className="absolute top-0 left-0 w-5 h-5 cursor-nwse-resize" style={{ touchAction: "none" }} />
     </motion.section>
   );
